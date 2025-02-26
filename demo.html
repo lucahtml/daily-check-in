@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Check-In App - Demo</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            background-color: #f5f5f5;
+        }
+        .app-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+        .header {
+            background-color: white;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .card {
+            background-color: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .btn-primary {
+            background-color: #4F46E5;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            text-decoration: none;
+            display: inline-block;
+            font-weight: 500;
+        }
+        .btn-primary:hover {
+            background-color: #4338CA;
+        }
+        .entry-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+        .entry-card {
+            background-color: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            padding: 1rem;
+            transition: box-shadow 0.3s;
+            cursor: pointer;
+        }
+        .entry-card:hover {
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .tag {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .tag-green {
+            background-color: #D1FAE5;
+            color: #065F46;
+        }
+        .tag-blue {
+            background-color: #DBEAFE;
+            color: #1E40AF;
+        }
+        .tag-purple {
+            background-color: #EDE9FE;
+            color: #5B21B6;
+        }
+        .tag-yellow {
+            background-color: #FEF3C7;
+            color: #92400E;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-content {
+            background-color: white;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            max-width: 500px;
+            width: 90%;
+        }
+        .show-modal {
+            display: flex;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <header class="header">
+            <h1 class="text-2xl font-bold text-blue-600">Daily Check-In</h1>
+            <nav>
+                <a href="#" class="btn-primary" id="new-entry-btn">Neuer Eintrag</a>
+            </nav>
+        </header>
+
+        <main>
+            <div class="card">
+                <h2 class="text-xl font-semibold mb-4">Deine Check-Ins</h2>
+                <p class="text-gray-600 mb-6">Hier siehst du alle deine bisherigen Einträge. Klicke auf einen Eintrag, um Details anzuzeigen.</p>
+                
+                <div class="entry-list">
+                    <!-- Eintrag 1 -->
+                    <div class="entry-card" onclick="document.getElementById('modal-entry-1').classList.add('show-modal')">
+                        <h3 class="text-lg font-semibold mb-2">Mittwoch, 26. Februar 2025</h3>
+                        <div class="grid grid-cols-2 gap-2 text-sm mb-3">
+                            <div>
+                                <p class="text-gray-600">Energie:</p>
+                                <p class="font-medium">8/10</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-600">Stimmung:</p>
+                                <p class="font-medium">7/10</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-600">Schlaf:</p>
+                                <p class="font-medium">480 Min.</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-600">Sport:</p>
+                                <p class="font-medium">1 Aktivität</p>
+                            </div>
+                        </div>
+                        <div class="mt-3 pt-3 border-t border-gray-100">
+                            <p class="text-gray-600 text-sm mb-1">Self Care:</p>
+                            <div class="flex flex-wrap">
+                                <span class="tag tag-green">Sauna</span>
+                                <span class="tag tag-purple">Dehnen</span>
+                                <span class="tag tag-yellow">Lesen</span>
+                            </div>
+                        </div>
+                        <div class="mt-3 pt-3 border-t border-gray-100">
+                            <p class="text-gray-600 text-sm">Dankbarkeit:</p>
+                            <p class="text-sm italic">"Dankbar für einen produktiven Tag"</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Eintrag 2 -->
+                    <div class="entry-card" onclick="document.getElementById('modal-entry-2').classList.add('show-modal')">
+                        <h3 class="text-lg font-semibold mb-2">Dienstag, 25. Februar 2025</h3>
+                        <div class="grid grid-cols-2 gap-2 text-sm mb-3">
+                            <div>
+                                <p class="text-gray-600">Energie:</p>
+                                <p class="font-medium">6/10</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-600">Stimmung:</p>
+                                <p class="font-medium">8/10</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-600">Schlaf:</p>
+                                <p class="font-medium">420 Min.</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-600">Sport:</p>
+                                <p class="font-medium">1 Aktivität</p>
+                            </div>
+                        </div>
+                        <div class="mt-3 pt-3 border-t border-gray-100">
+                            <p class="text-gray-600 text-sm mb-1">Self Care:</p>
+                            <div class="flex flex-wrap">
+                                <span class="tag tag-blue">Eisbad</span>
+                                <span class="tag tag-purple">Dehnen</span>
+                            </div>
+                        </div>
+                        <div class="mt-3 pt-3 border-t border-gray-100">
+                            <p class="text-gray-600 text-sm">Dankbarkeit:</p>
+                            <p class="text-sm italic">"Dankbar für gute Gespräche"</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        
+        <footer class="mt-8 text-center text-gray-600 text-sm">
+            <p>Dies ist eine statische Demo-Version der Daily Check-In App.</p>
+            <p class="mt-2">
+                <a href="index.html" class="text-blue-600 hover:underline">Zurück zur Startseite</a>
+            </p>
+        </footer>
+    </div>
+    
+    <!-- Modals für Einträge -->
+    <div id="modal-new-entry" class="modal">
+        <div class="modal-content">
+            <h3 class="text-xl font-semibold mb-4">Neuer Eintrag</h3>
+            <p class="mb-6">In einer echten Implementierung würde hier das Formular für einen neuen Eintrag angezeigt werden.</p>
+            <div class="flex justify-end">
+                <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded" onclick="this.parentElement.parentElement.parentElement.classList.remove('show-modal')">Schließen</button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="modal-entry-1" class="modal">
+        <div class="modal-content">
+            <h3 class="text-xl font-semibold mb-4">Eintrag vom Mittwoch, 26. Februar 2025</h3>
+            <div class="mb-4">
+                <h4 class="font-medium mb-2">Allgemein</h4>
+                <div class="grid grid-cols-2 gap-2 text-sm">
+                    <div>
+                        <p class="text-gray-600">Energie:</p>
+                        <p class="font-medium">8/10</p>
+                    </div>
+                    <div>
+                        <p class="text-gray-600">Stimmung:</p>
+                        <p class="font-medium">7/10</p>
+                    </div>
+                    <div>
+                        <p class="text-gray-600">Schlaf:</p>
+                        <p class="font-medium">480 Min. (8 Stunden)</p>
+                    </div>
+                    <div>
+                        <p class="text-gray-600">Protein:</p>
+                        <p class="font-medium">120g</p>
+                    </div>
+                </div>
+            </div>
+            <div class="mb-4">
+                <h4 class="font-medium mb-2">Sport</h4>
+                <div class="text-sm">
+                    <p><span class="text-gray-600">Aktivität:</span> Laufen</p>
+                    <p><span class="text-gray-600">Zeit:</span> 08:00 Uhr</p>
+                    <p><span class="text-gray-600">Dauer:</span> 30 Minuten</p>
+                </div>
+            </div>
+            <div class="mb-4">
+                <h4 class="font-medium mb-2">Self-Care</h4>
+                <div class="grid grid-cols-2 gap-2 text-sm">
+                    <div>
+                        <p><span class="text-gray-600">Sauna:</span> Ja</p>
+                        <p><span class="text-gray-600">Zeit:</span> 18:00 Uhr</p>
+                        <p><span class="text-gray-600">Dauer:</span> 20 Minuten</p>
+                    </div>
+                    <div>
+                        <p><span class="text-gray-600">Eisbad:</span> Nein</p>
+                    </div>
+                    <div>
+                        <p><span class="text-gray-600">Dehnen:</span> Ja</p>
+                        <p><span class="text-gray-600">Zeit:</span> 21:00 Uhr</p>
+                        <p><span class="text-gray-600">Dauer:</span> 15 Minuten</p>
+                    </div>
+                    <div>
+                        <p><span class="text-gray-600">Lesen:</span> Ja</p>
+                        <p><span class="text-gray-600">Zeit:</span> 22:00 Uhr</p>
+                        <p><span class="text-gray-600">Dauer:</span> 30 Minuten</p>
+                    </div>
+                </div>
+            </div>
+            <div class="mb-6">
+                <h4 class="font-medium mb-2">Dankbarkeit</h4>
+                <p class="text-sm italic">"Dankbar für einen produktiven Tag"</p>
+            </div>
+            <div class="flex justify-end">
+                <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded" onclick="this.parentElement.parentElement.parentElement.classList.remove('show-modal')">Schließen</button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="modal-entry-2" class="modal">
+        <div class="modal-content">
+            <h3 class="text-xl font-semibold mb-4">Eintrag vom Dienstag, 25. Februar 2025</h3>
+            <div class="mb-4">
+                <h4 class="font-medium mb-2">Allgemein</h4>
+                <div class="grid grid-cols-2 gap-2 text-sm">
+                    <div>
+                        <p class="text-gray-600">Energie:</p>
+                        <p class="font-medium">6/10</p>
+                    </div>
+                    <div>
+                        <p class="text-gray-600">Stimmung:</p>
+                        <p class="font-medium">8/10</p>
+                    </div>
+                    <div>
+                        <p class="text-gray-600">Schlaf:</p>
+                        <p class="font-medium">420 Min. (7 Stunden)</p>
+                    </div>
+                    <div>
+                        <p class="text-gray-600">Protein:</p>
+                        <p class="font-medium">100g</p>
+                    </div>
+                </div>
+            </div>
+            <div class="mb-4">
+                <h4 class="font-medium mb-2">Sport</h4>
+                <div class="text-sm">
+                    <p><span class="text-gray-600">Aktivität:</span> Krafttraining</p>
+                    <p><span class="text-gray-600">Zeit:</span> 17:00 Uhr</p>
+                    <p><span class="text-gray-600">Dauer:</span> 45 Minuten</p>
+                </div>
+            </div>
+            <div class="mb-4">
+                <h4 class="font-medium mb-2">Self-Care</h4>
+                <div class="grid grid-cols-2 gap-2 text-sm">
+                    <div>
+                        <p><span class="text-gray-600">Sauna:</span> Nein</p>
+                    </div>
+                    <div>
+                        <p><span class="text-gray-600">Eisbad:</span> Ja</p>
+                        <p><span class="text-gray-600">Zeit:</span> 18:30 Uhr</p>
+                        <p><span class="text-gray-600">Dauer:</span> 5 Minuten</p>
+                    </div>
+                    <div>
+                        <p><span class="text-gray-600">Dehnen:</span> Ja</p>
+                        <p><span class="text-gray-600">Zeit:</span> 20:00 Uhr</p>
+                        <p><span class="text-gray-600">Dauer:</span> 10 Minuten</p>
+                    </div>
+                    <div>
+                        <p><span class="text-gray-600">Lesen:</span> Nein</p>
+                    </div>
+                </div>
+            </div>
+            <div class="mb-6">
+                <h4 class="font-medium mb-2">Dankbarkeit</h4>
+                <p class="text-sm italic">"Dankbar für gute Gespräche"</p>
+            </div>
+            <div class="flex justify-end">
+                <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded" onclick="this.parentElement.parentElement.parentElement.classList.remove('show-modal')">Schließen</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Einfaches JavaScript für die Modals
+        document.getElementById('new-entry-btn').addEventListener('click', function() {
+            document.getElementById('modal-new-entry').classList.add('show-modal');
+        });
+        
+        // Event-Listener für Klicks außerhalb der Modals
+        window.addEventListener('click', function(event) {
+            const modals = document.querySelectorAll('.modal');
+            modals.forEach(function(modal) {
+                if (event.target === modal) {
+                    modal.classList.remove('show-modal');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
