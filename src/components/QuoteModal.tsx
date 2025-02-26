@@ -52,13 +52,13 @@ const QuoteModal: React.FC<QuoteModalProps> = ({
             </svg>
           </div>
           
-          <h3 className="text-xl font-bold text-gray-800">Gut gemacht!</h3>
+          <h3 className="text-xl font-bold text-gray-800">Well done!</h3>
           
           <div className="mt-2 mb-4">
-            <span className="text-primary font-bold text-lg">{streak} Tage Streak! 🔥</span>
+            <span className="text-primary font-bold text-lg">{streak} Day Streak! 🔥</span>
             {isMonthlyCheckpoint && (
               <div className="mt-1 text-green-600 font-semibold">
-                Monatlicher Meilenstein erreicht! 🏆
+                Monthly milestone reached! 🏆
               </div>
             )}
           </div>
@@ -74,7 +74,7 @@ const QuoteModal: React.FC<QuoteModalProps> = ({
             className="btn-primary"
             onClick={onClose}
           >
-            Weiter
+            Continue
           </button>
         </div>
       </div>

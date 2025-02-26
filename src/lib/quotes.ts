@@ -6,115 +6,115 @@ export interface Quote {
 export const quotes: Quote[] = [
   // Steve Jobs
   {
-    text: "Deine Zeit ist begrenzt, also verschwende sie nicht damit, das Leben eines anderen zu leben.",
+    text: "Your time is limited, so don't waste it living someone else's life.",
     author: "Steve Jobs"
   },
   {
-    text: "Bleib hungrig, bleib töricht.",
+    text: "Stay hungry, stay foolish.",
     author: "Steve Jobs"
   },
   {
-    text: "Innovation unterscheidet zwischen einem Anführer und einem Nachfolger.",
+    text: "Innovation distinguishes between a leader and a follower.",
     author: "Steve Jobs"
   },
   {
-    text: "Der einzige Weg, großartige Arbeit zu leisten, ist zu lieben, was du tust.",
+    text: "The only way to do great work is to love what you do.",
     author: "Steve Jobs"
   },
   
   // Marcus Aurelius
   {
-    text: "Du hast Macht über deinen Geist - nicht über äußere Ereignisse. Erkenne dies, und du wirst Stärke finden.",
+    text: "You have power over your mind - not outside events. Realize this, and you will find strength.",
     author: "Marcus Aurelius"
   },
   {
-    text: "Alles, was wir hören, ist eine Meinung, keine Tatsache. Alles, was wir sehen, ist eine Perspektive, nicht die Wahrheit.",
+    text: "Everything we hear is an opinion, not a fact. Everything we see is a perspective, not the truth.",
     author: "Marcus Aurelius"
   },
   {
-    text: "Wenn du dich über etwas ärgerst, verlierst du etwas anderes: deine Zeit.",
+    text: "When you arise in the morning think of what a privilege it is to be alive, to think, to breathe.",
     author: "Marcus Aurelius"
   },
   {
-    text: "Sehr oft ist es nicht das, was wir tun, sondern das, was wir nicht tun, was uns das Glück kostet.",
+    text: "The impediment to action advances action. What stands in the way becomes the way.",
     author: "Marcus Aurelius"
   },
   
   // Naval Ravikant
   {
-    text: "Lerne, glücklich allein zu sein. Dann kannst du in jeder Situation glücklich sein.",
+    text: "Learn to be happy alone, then you can be happy with anyone.",
     author: "Naval Ravikant"
   },
   {
-    text: "Lese das, was du liebst, bis du das liebst, was du liest.",
+    text: "Read what you love, until you love what you read.",
     author: "Naval Ravikant"
   },
   {
-    text: "Glück ist eine Entscheidung, die du triffst, und eine Fähigkeit, die du entwickelst.",
+    text: "Happiness is a skill, something you have to work on every day.",
     author: "Naval Ravikant"
   },
   {
-    text: "Wenn du nicht entscheiden kannst, ist die Antwort nein.",
+    text: "If you can't decide, the answer is no.",
     author: "Naval Ravikant"
   },
   
   // Elon Musk
   {
-    text: "Wenn etwas wichtig genug ist, machst du es, auch wenn die Chancen nicht in deiner Gunst stehen.",
+    text: "When something's important enough, you do it even if the odds are against you.",
     author: "Elon Musk"
   },
   {
-    text: "Ich denke, es ist möglich für gewöhnliche Menschen, sich zu entscheiden, außergewöhnlich zu sein.",
+    text: "I think it's very important to have a feedback loop, where you're constantly thinking about what you've done and how you could be doing it better.",
     author: "Elon Musk"
   },
   {
-    text: "Ausdauer ist sehr wichtig. Du solltest nicht aufgeben, es sei denn, du bist gezwungen aufzugeben.",
+    text: "Persistence is very important. You should not give up unless you are forced to give up.",
     author: "Elon Musk"
   },
   {
-    text: "Wenn du morgens aufwachst und denkst, die Zukunft wird besser sein, ist das ein schöner Tag.",
+    text: "If something's important enough, you do it even if the odds are not in your favor.",
     author: "Elon Musk"
   },
   
   // Sokrates
   {
-    text: "Das Geheimnis des Wandels ist, deine ganze Energie nicht darauf zu richten, das Alte zu bekämpfen, sondern das Neue aufzubauen.",
+    text: "The secret of change is to focus all of your energy not on fighting the old, but on building the new.",
     author: "Sokrates"
   },
   {
-    text: "Ich weiß, dass ich nichts weiß.",
+    text: "I know that I know nothing.",
     author: "Sokrates"
   },
   {
-    text: "Ein nicht hinterfragtes Leben ist nicht lebenswert.",
+    text: "The unexamined life is not worth living.",
     author: "Sokrates"
   },
   {
-    text: "Starke Geister diskutieren Ideen, mittelmäßige Geister diskutieren Ereignisse, schwache Geister diskutieren Menschen.",
+    text: "Strong minds discuss ideas, average minds discuss events, weak minds discuss people.",
     author: "Sokrates"
   },
   
   // Alex Hormozi
   {
-    text: "Disziplin ist die Brücke zwischen Zielen und Erfolg.",
+    text: "Discipline is the bridge between goals and accomplishment.",
     author: "Alex Hormozi"
   },
   {
-    text: "Die meisten Menschen überschätzen, was sie in einem Jahr erreichen können, und unterschätzen, was sie in einem Jahrzehnt erreichen können.",
+    text: "Most people overestimate what they can do in one year and underestimate what they can do in ten years.",
     author: "Alex Hormozi"
   },
   {
-    text: "Wenn du nicht bereit bist, für deine Träume zu leiden, werden deine Träume leiden.",
+    text: "If you're not willing to suffer for your dreams, your dreams will suffer.",
     author: "Alex Hormozi"
   },
   {
-    text: "Dein Netzwerk bestimmt deinen Nettowert.",
+    text: "Your network determines your net worth.",
     author: "Alex Hormozi"
   }
 ];
 
 // Get a random quote
-export const getRandomQuote = (): Quote => {
+export function getRandomQuote(): Quote {
   const randomIndex = Math.floor(Math.random() * quotes.length);
   return quotes[randomIndex];
-};
+}

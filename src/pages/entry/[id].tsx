@@ -5,22 +5,27 @@ import Link from 'next/link';
 
 export default function EntryDetail() {
   const router = useRouter();
-  const { id } = router.query;
   const [entry, setEntry] = useState<DailyEntry | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (id && typeof id === 'string') {
-      const entryData = getEntryById(id);
-      setEntry(entryData || null);
+    if (typeof window !== 'undefined') {
+      // Get the ID from the URL path directly
+      const pathParts = window.location.pathname.split('/');
+      const id = pathParts[pathParts.length - 2]; // Get the ID from the path
+      
+      if (id) {
+        const entryData = getEntryById(id);
+        setEntry(entryData || null);
+      }
       setLoading(false);
     }
-  }, [id]);
+  }, []);
 
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <p>Lade Eintrag...</p>
+        <p>Loading entry...</p>
       </div>
     );
   }
@@ -28,10 +33,10 @@ export default function EntryDetail() {
   if (!entry) {
     return (
       <div className="text-center py-8 card">
-        <h2 className="text-xl font-semibold mb-4">Eintrag nicht gefunden</h2>
-        <p className="text-gray-500 mb-4">Der gesuchte Eintrag existiert nicht oder wurde gelöscht.</p>
+        <h2 className="text-xl font-semibold mb-4">Entry not found</h2>
+        <p className="text-gray-500 mb-4">The entry you're looking for doesn't exist or has been deleted.</p>
         <Link href="/" className="btn-primary">
-          Zurück zur Übersicht
+          Back to overview
         </Link>
       </div>
     );
@@ -39,7 +44,7 @@ export default function EntryDetail() {
 
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr);
-    return new Intl.DateTimeFormat('de-DE', {
+    return new Intl.DateTimeFormat('en-US', {
       weekday: 'long',
       year: 'numeric',
       month: 'long',
@@ -50,41 +55,41 @@ export default function EntryDetail() {
   return (
     <div className="space-y-6">
       <header className="text-center py-4">
-        <h1 className="text-2xl font-bold text-primary">Eintrag Details</h1>
+        <h1 className="text-2xl font-bold text-primary">Entry Details</h1>
         <p className="text-gray-600">{formatDate(entry.date)}</p>
       </header>
 
       <div className="card">
-        <h2 className="text-xl font-semibold mb-4">Schlaf</h2>
+        <h2 className="text-xl font-semibold mb-4">Sleep</h2>
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <p className="text-gray-500">Gesamtschlaf</p>
+            <p className="text-gray-500">Total Sleep</p>
             <p className="font-medium">{entry.sleep.total} Stunden</p>
           </div>
           <div>
-            <p className="text-gray-500">Leichter Schlaf</p>
+            <p className="text-gray-500">Light Sleep</p>
             <p className="font-medium">{entry.sleep.light} Stunden</p>
           </div>
           <div>
-            <p className="text-gray-500">Tiefer Schlaf</p>
+            <p className="text-gray-500">Deep Sleep</p>
             <p className="font-medium">{entry.sleep.deep} Stunden</p>
           </div>
           <div>
-            <p className="text-gray-500">REM Schlaf</p>
+            <p className="text-gray-500">REM Sleep</p>
             <p className="font-medium">{entry.sleep.rem} Stunden</p>
           </div>
         </div>
       </div>
 
       <div className="card">
-        <h2 className="text-xl font-semibold mb-4">Wohlbefinden</h2>
+        <h2 className="text-xl font-semibold mb-4">Wellbeing</h2>
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <p className="text-gray-500">Energie</p>
+            <p className="text-gray-500">Energy</p>
             <p className="font-medium">{entry.wellbeing.energy}/10</p>
           </div>
           <div>
-            <p className="text-gray-500">Stimmung</p>
+            <p className="text-gray-500">Mood</p>
             <p className="font-medium">{entry.wellbeing.mood}/10</p>
           </div>
           <div>
@@ -92,7 +97,7 @@ export default function EntryDetail() {
             <p className="font-medium">{entry.wellbeing.stress}/10</p>
           </div>
           <div>
-            <p className="text-gray-500">Fokus</p>
+            <p className="text-gray-500">Focus</p>
             <p className="font-medium">{entry.wellbeing.focus}/10</p>
           </div>
         </div>
@@ -100,13 +105,13 @@ export default function EntryDetail() {
 
       {entry.exercise && entry.exercise.activities && entry.exercise.activities.length > 0 && (
         <div className="card">
-          <h2 className="text-xl font-semibold mb-4">Bewegung</h2>
+          <h2 className="text-xl font-semibold mb-4">Exercise</h2>
           <div className="space-y-4">
             {entry.exercise.activities.map((activity, index) => (
               <div key={index} className="p-3 bg-gray-50 rounded-md">
                 <p className="font-medium">{activity.type}</p>
-                <p className="text-gray-500">{activity.duration} Minuten</p>
-                {activity.intensity && <p className="text-gray-500">Intensität: {activity.intensity}/10</p>}
+                <p className="text-gray-500">{activity.duration} minutes</p>
+                {activity.intensity && <p className="text-gray-500">Intensity: {activity.intensity}/10</p>}
               </div>
             ))}
           </div>
@@ -115,12 +120,12 @@ export default function EntryDetail() {
 
       {entry.selfCare && entry.selfCare.activities && entry.selfCare.activities.length > 0 && (
         <div className="card">
-          <h2 className="text-xl font-semibold mb-4">Selbstfürsorge</h2>
+          <h2 className="text-xl font-semibold mb-4">Self Care</h2>
           <div className="space-y-4">
             {entry.selfCare.activities.map((activity, index) => (
               <div key={index} className="p-3 bg-gray-50 rounded-md">
                 <p className="font-medium">{activity.type}</p>
-                <p className="text-gray-500">{activity.duration} Minuten</p>
+                <p className="text-gray-500">{activity.duration} minutes</p>
               </div>
             ))}
           </div>
@@ -129,17 +134,17 @@ export default function EntryDetail() {
 
       {entry.notes && (
         <div className="card">
-          <h2 className="text-xl font-semibold mb-4">Notizen</h2>
+          <h2 className="text-xl font-semibold mb-4">Notes</h2>
           <p className="whitespace-pre-wrap">{entry.notes}</p>
         </div>
       )}
 
       <div className="flex justify-center space-x-4 pt-4">
         <Link href="/" className="btn-secondary">
-          Zurück zur Übersicht
+          Back to overview
         </Link>
         <Link href={`/new-entry?date=${entry.date}`} className="btn-primary">
-          Bearbeiten
+          Edit
         </Link>
       </div>
     </div>
