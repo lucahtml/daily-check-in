@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Check-In App</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f5f5f5;
+            text-align: center;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 1rem;
+        }
+        p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+        .btn {
+            display: inline-block;
+            background-color: #4F46E5;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.375rem;
+            text-decoration: none;
+            font-weight: 500;
+            transition: background-color 0.2s;
+        }
+        .btn:hover {
+            background-color: #4338CA;
+        }
+        .github-link {
+            margin-top: 2rem;
+            color: #6B7280;
+            text-decoration: none;
+        }
+        .github-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Daily Check-In App</h1>
+        <p>Eine Web-Anwendung zur Verfolgung täglicher Gewohnheiten, Stimmungen und Aktivitäten für ein gesünderes Leben.</p>
+        
+        <a href="https://lucahtml.github.io/daily-check-in/app" class="btn">Zur Anwendung</a>
+        
+        <p style="margin-top: 2rem; font-size: 0.875rem;">
+            Diese Anwendung verwendet LocalStorage zur Datenspeicherung. Alle Ihre Daten werden lokal in Ihrem Browser gespeichert und nicht an einen Server gesendet.
+        </p>
+        
+        <a href="https://github.com/lucahtml/daily-check-in" class="github-link">GitHub Repository</a>
+    </div>
+</body>
+</html>
