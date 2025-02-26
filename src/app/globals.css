@@ -5,6 +5,8 @@
 :root {
   --foreground-rgb: 31, 41, 55;
   --background-rgb: 249, 250, 251;
+  --primary-color: 79, 70, 229; /* Indigo color */
+  --animation-timing: 0.3s;
 }
 
 body {
@@ -15,9 +17,103 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Steve Jobs inspired animations and transitions */
+* {
+  transition: all var(--animation-timing) ease;
+}
+
+input:focus, textarea:focus, select:focus {
+  animation: subtle-focus 0.3s ease forwards;
+}
+
+@keyframes subtle-focus {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-1px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+.card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+}
+
+.btn-primary, .btn-secondary {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.btn-primary:hover, .btn-secondary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.btn-primary:active, .btn-secondary:active {
+  transform: translateY(1px);
+}
+
+input[type="range"] {
+  -webkit-appearance: none;
+  height: 6px;
+  border-radius: 3px;
+  background: #e2e8f0;
+  outline: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: rgb(var(--primary-color));
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 0 0 4px rgba(var(--primary-color), 0.1);
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.1);
+}
+
+input[type="checkbox"] {
+  transition: all 0.2s ease;
+}
+
+input[type="checkbox"]:checked {
+  animation: subtle-check 0.3s ease;
+}
+
+@keyframes subtle-check {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
 @layer components {
   .input-field {
     @apply w-full px-3 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-base;
+    transition: all 0.3s ease;
+  }
+  
+  .input-field:focus {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
   }
   
   .time-input {
@@ -34,6 +130,10 @@ body {
   
   .btn-primary {
     @apply btn bg-primary text-white hover:bg-blue-600 focus:ring-blue-500;
+  }
+  
+  .btn-secondary {
+    @apply btn bg-white text-gray-700 border border-gray-300 hover:bg-gray-50;
   }
   
   .card {

@@ -1,0 +1,239 @@
+/* Subtle animations and transitions inspired by Steve Jobs' design philosophy */
+
+/* Smooth transitions for all elements */
+* {
+  transition: all 0.2s ease-out;
+}
+
+/* Input focus effects */
+input:focus, textarea:focus, select:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
+  transform: translateY(-1px);
+}
+
+/* Success animation for completed inputs */
+.input-success {
+  animation: subtle-success 0.5s ease-out;
+}
+
+@keyframes subtle-success {
+  0% {
+    background-color: rgba(79, 70, 229, 0.05);
+  }
+  50% {
+    background-color: rgba(79, 70, 229, 0.1);
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
+/* Card hover effects */
+.card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+}
+
+/* Button hover and active states */
+.btn-primary, .btn-secondary {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.2s ease;
+}
+
+.btn-primary:hover, .btn-secondary:hover {
+  transform: translateY(-1px);
+}
+
+.btn-primary:active, .btn-secondary:active {
+  transform: translateY(1px);
+}
+
+/* Ripple effect for buttons */
+.btn-primary::after, .btn-secondary::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 5px;
+  height: 5px;
+  background: rgba(255, 255, 255, 0.5);
+  opacity: 0;
+  border-radius: 100%;
+  transform: scale(1, 1) translate(-50%, -50%);
+  transform-origin: 50% 50%;
+}
+
+.btn-primary:focus:not(:active)::after, .btn-secondary:focus:not(:active)::after {
+  animation: ripple 0.5s ease-out;
+}
+
+@keyframes ripple {
+  0% {
+    transform: scale(0, 0);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(20, 20);
+    opacity: 0;
+  }
+}
+
+/* Smooth page transitions */
+.page-transition-enter {
+  opacity: 0;
+  transform: translateY(5px);
+}
+
+.page-transition-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.3s, transform 0.3s;
+}
+
+/* Navigation active indicator with subtle animation */
+.nav-indicator {
+  position: absolute;
+  bottom: 0;
+  height: 3px;
+  background-color: #4F46E5;
+  transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+
+/* Slider input styling */
+input[type="range"] {
+  -webkit-appearance: none;
+  height: 6px;
+  border-radius: 3px;
+  background: #e2e8f0;
+  outline: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #4F46E5;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.1);
+}
+
+/* Checkbox custom styling */
+input[type="checkbox"] {
+  position: relative;
+  width: 18px;
+  height: 18px;
+  color: #4F46E5;
+  border: 1px solid #cbd5e1;
+  border-radius: 4px;
+  appearance: none;
+  outline: 0;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+input[type="checkbox"]::before {
+  position: absolute;
+  content: '';
+  display: block;
+  top: 1px;
+  left: 5px;
+  width: 6px;
+  height: 10px;
+  border-style: solid;
+  border-color: white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+  opacity: 0;
+}
+
+input[type="checkbox"]:checked {
+  color: white;
+  border-color: #4F46E5;
+  background: #4F46E5;
+}
+
+input[type="checkbox"]:checked::before {
+  opacity: 1;
+  animation: check 0.3s ease;
+}
+
+@keyframes check {
+  0% {
+    opacity: 0;
+    transform: rotate(45deg) scale(0.8);
+  }
+  50% {
+    opacity: 0.5;
+    transform: rotate(45deg) scale(1.1);
+  }
+  100% {
+    opacity: 1;
+    transform: rotate(45deg) scale(1);
+  }
+}
+
+/* Radio button custom styling */
+input[type="radio"] {
+  position: relative;
+  width: 18px;
+  height: 18px;
+  color: #4F46E5;
+  border: 1px solid #cbd5e1;
+  border-radius: 50%;
+  appearance: none;
+  outline: 0;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+input[type="radio"]::before {
+  position: absolute;
+  content: '';
+  display: block;
+  top: 4px;
+  left: 4px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: white;
+  opacity: 0;
+  transition: all 0.2s ease;
+}
+
+input[type="radio"]:checked {
+  border-color: #4F46E5;
+  background: #4F46E5;
+}
+
+input[type="radio"]:checked::before {
+  opacity: 1;
+  transform: scale(1);
+  animation: radio 0.3s ease;
+}
+
+@keyframes radio {
+  0% {
+    opacity: 0;
+    transform: scale(0);
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(1.2);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
