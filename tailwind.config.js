@@ -1,4 +1,4 @@
-/** @type {import('@tailwindcss/postcss7-compat').Config} */
+/** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
