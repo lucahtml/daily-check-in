@@ -33,7 +33,7 @@ const EntryCard: React.FC<EntryCardProps> = ({ entry }) => {
   };
 
   return (
-    <Link href={`/entry/${entry.id}`} className="block no-underline">
+    <Link href={`/entry/${entry.id}/`} className="block no-underline">
       <div className="card hover:shadow-lg transition-shadow mb-4">
         <h3 className="text-lg font-semibold mb-2">{formatDate(entry.date)}</h3>
         

@@ -93,17 +93,20 @@ export const saveEntry = (entry: DailyEntry): void => {
 };
 
 // Get a specific entry by date
-export const getEntryByDate = (date: string): DailyEntry | undefined => {
+export function getEntryByDate(date: string): DailyEntry | undefined {
   if (!isBrowser) return undefined;
   
-  try {
-    const entries = getEntries();
-    return entries.find(entry => entry.date === date);
-  } catch (error) {
-    console.error('Error retrieving entry by date:', error);
-    return undefined;
-  }
-};
+  const entries = getEntries();
+  return entries.find(entry => entry.date === date);
+}
+
+// Get a specific entry by ID
+export function getEntryById(id: string): DailyEntry | undefined {
+  if (!isBrowser) return undefined;
+  
+  const entries = getEntries();
+  return entries.find(entry => entry.id === id);
+}
 
 // Delete an entry
 export const deleteEntry = (id: string): void => {
