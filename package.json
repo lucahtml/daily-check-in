@@ -1,0 +1,39 @@
+{
+  "name": "daily-check-in",
+  "version": "1.0.0",
+  "description": "A daily health and wellness tracking application",
+  "main": "index.js",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "keywords": [
+    "health",
+    "wellness",
+    "tracking",
+    "daily-log"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/node": "^22.13.5",
+    "@types/react": "^19.0.10",
+    "@types/react-dom": "^19.0.4",
+    "chart.js": "^4.4.8",
+    "eslint": "^9.21.0",
+    "eslint-config-next": "^15.1.7",
+    "next": "^15.1.7",
+    "react": "^19.0.0",
+    "react-chartjs-2": "^5.3.0",
+    "react-dom": "^19.0.0",
+    "tailwindcss": "^4.0.9",
+    "typescript": "^5.7.3"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss7-compat": "^2.2.17",
+    "autoprefixer": "^9.8.8",
+    "postcss": "^7.0.39"
+  }
+}

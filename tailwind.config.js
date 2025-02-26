@@ -1,0 +1,20 @@
+/** @type {import('@tailwindcss/postcss7-compat').Config} */
+module.exports = {
+  content: [
+    "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
+  ],
+  theme: {
+    extend: {
+      colors: {
+        primary: "#3b82f6",
+        secondary: "#10b981",
+        background: "#f9fafb",
+        card: "#ffffff",
+        text: "#1f2937",
+      },
+    },
+  },
+  plugins: [],
+};
