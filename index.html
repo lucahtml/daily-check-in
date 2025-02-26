@@ -4,71 +4,70 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Daily Check-In App</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background-color: #f5f5f5;
-            text-align: center;
-        }
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 2rem;
-            background-color: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        h1 {
-            color: #333;
-            margin-bottom: 1rem;
-        }
-        p {
-            color: #666;
-            line-height: 1.6;
-            margin-bottom: 1.5rem;
-        }
-        .btn {
-            display: inline-block;
-            background-color: #4F46E5;
-            color: white;
-            padding: 0.75rem 1.5rem;
-            border-radius: 0.375rem;
-            text-decoration: none;
-            font-weight: 500;
-            transition: background-color 0.2s;
-        }
-        .btn:hover {
-            background-color: #4338CA;
-        }
-        .github-link {
-            margin-top: 2rem;
-            color: #6B7280;
-            text-decoration: none;
-        }
-        .github-link:hover {
-            text-decoration: underline;
         }
     </style>
 </head>
-<body>
-    <div class="container">
-        <h1>Daily Check-In App</h1>
-        <p>Eine Web-Anwendung zur Verfolgung täglicher Gewohnheiten, Stimmungen und Aktivitäten für ein gesünderes Leben.</p>
-        
-        <a href="https://lucahtml.github.io/daily-check-in/app" class="btn">Zur Anwendung</a>
-        
-        <p style="margin-top: 2rem; font-size: 0.875rem;">
-            Diese Anwendung verwendet LocalStorage zur Datenspeicherung. Alle Ihre Daten werden lokal in Ihrem Browser gespeichert und nicht an einen Server gesendet.
-        </p>
-        
-        <a href="https://github.com/lucahtml/daily-check-in" class="github-link">GitHub Repository</a>
+<body class="bg-gray-50 min-h-screen">
+    <div class="container mx-auto px-4 py-12 max-w-4xl">
+        <header class="text-center mb-12">
+            <h1 class="text-4xl font-bold text-blue-600 mb-4">Daily Check-In App</h1>
+            <p class="text-xl text-gray-600">Eine Web-Anwendung zur Verfolgung täglicher Gewohnheiten, Stimmungen und Aktivitäten für ein gesünderes Leben.</p>
+        </header>
+
+        <main>
+            <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+                <h2 class="text-2xl font-semibold mb-4">Willkommen zu Deinem täglichen Check-In</h2>
+                <p class="text-gray-700 mb-6">Diese App hilft dir dabei, deine täglichen Aktivitäten, Stimmungen und Gewohnheiten zu verfolgen, um ein gesünderes und bewussteres Leben zu führen.</p>
+                
+                <div class="flex justify-center">
+                    <a href="#" onclick="startApp()" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-md transition duration-300">
+                        App starten
+                    </a>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h3 class="text-xl font-semibold mb-3">Funktionen</h3>
+                    <ul class="list-disc pl-5 space-y-2 text-gray-700">
+                        <li>Tägliche Einträge für Stimmung, Energie und Schlaf</li>
+                        <li>Tracking von Sportaktivitäten mit Zeit und Dauer</li>
+                        <li>Self-Care-Aktivitäten (Sauna, Eisbad, Dehnen, Lesen) mit Zeit und Dauer</li>
+                        <li>Übersicht über vergangene Einträge</li>
+                        <li>Analyse von Trends und Mustern</li>
+                    </ul>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h3 class="text-xl font-semibold mb-3">Datenschutz</h3>
+                    <p class="text-gray-700 mb-4">Alle deine Daten werden lokal in deinem Browser gespeichert und nicht an externe Server gesendet.</p>
+                    <p class="text-gray-700">Die App verwendet LocalStorage zur Datenspeicherung, was bedeutet, dass deine Daten privat und sicher auf deinem Gerät bleiben.</p>
+                </div>
+            </div>
+        </main>
+
+        <footer class="mt-12 text-center text-gray-600">
+            <p> 2025 Daily Check-In App</p>
+            <p class="mt-2">
+                <a href="https://github.com/lucahtml/daily-check-in" class="text-blue-600 hover:underline">GitHub Repository</a>
+            </p>
+        </footer>
     </div>
+
+    <script>
+        function startApp() {
+            // Speichern Sie die aktuelle URL, um den Basispfad zu erhalten
+            const baseUrl = window.location.href.split('/').slice(0, -1).join('/');
+            
+            // Starten Sie die App in einem neuen Tab
+            window.open(`${baseUrl}/app/index.html`, '_blank');
+            
+            return false;
+        }
+    </script>
 </body>
 </html>

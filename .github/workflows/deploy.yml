@@ -23,6 +23,11 @@ jobs:
       - name: Build
         run: npm run build
 
+      - name: Copy static HTML files
+        run: |
+          cp index.html out/
+          cp -r app out/
+
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
