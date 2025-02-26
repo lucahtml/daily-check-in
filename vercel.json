@@ -1,6 +1,7 @@
 {
-  "framework": "nextjs",
-  "routes": [
-    { "src": "/(.*)", "dest": "/index.html" }
-  ]
+  "framework": null,
+  "buildCommand": "npm run static-build",
+  "outputDirectory": "out",
+  "devCommand": "npm run dev",
+  "installCommand": "npm install"
 }

@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  output: 'export',
   typescript: {
     // !! WARN !!
     // Dangerously allow production builds to successfully complete even if
@@ -8,8 +9,8 @@ const nextConfig = {
     // !! WARN !!
     ignoreBuildErrors: true,
   },
-  experimental: {
-    appDir: true
+  images: {
+    unoptimized: true,
   }
 }
 
