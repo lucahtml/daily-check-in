@@ -254,28 +254,34 @@ export default function NewEntryPage() {
       
       console.log('Saving entry...');
       
-      // Save entry
-      saveEntry(entry);
-      
-      console.log('Entry saved successfully!');
-      
-      // Update streak info and prepare reward
-      const allEntries = getEntries();
-      const streakInfo = updateStreakInfo(allEntries);
-      setStreakCount(streakInfo.currentStreak);
-      
-      // Check if we've reached a monthly checkpoint
-      const prevStreakInfo = getStreakInfo();
-      setIsMonthlyCheckpoint(
-        streakInfo.monthlyCheckpoints.length > prevStreakInfo.monthlyCheckpoints.length
-      );
-      
-      // Direkt zur Startseite weiterleiten ohne Modal anzuzeigen
-      router.push('/');
-      setIsSaving(false);
+      try {
+        // Save entry
+        saveEntry(entry);
+        
+        console.log('Entry saved successfully!');
+        
+        // Update streak info and prepare reward
+        const allEntries = getEntries();
+        const streakInfo = updateStreakInfo(allEntries);
+        setStreakCount(streakInfo.currentStreak);
+        
+        // Check if we've reached a monthly checkpoint
+        const prevStreakInfo = getStreakInfo();
+        setIsMonthlyCheckpoint(
+          streakInfo.monthlyCheckpoints.length > prevStreakInfo.monthlyCheckpoints.length
+        );
+        
+        // Direkt zur Startseite weiterleiten ohne Modal anzuzeigen
+        window.location.href = '/';
+      } catch (saveError) {
+        console.error('Error in saveEntry function:', saveError);
+        alert(`Fehler beim Speichern: ${saveError.message || 'Unbekannter Fehler'}`);
+        setIsSaving(false);
+        return;
+      }
     } catch (error) {
-      console.error('Error saving entry:', error);
-      alert('Es ist ein Fehler beim Speichern des Eintrags aufgetreten. Bitte versuche es erneut.');
+      console.error('Error in form submission:', error);
+      alert(`Es ist ein Fehler aufgetreten: ${error.message || 'Unbekannter Fehler'}`);
       setIsSaving(false);
     }
   };
@@ -285,7 +291,7 @@ export default function NewEntryPage() {
       setShowQuoteModal(false);
       // Verzögere die Weiterleitung, um sicherzustellen, dass das Modal geschlossen ist
       setTimeout(() => {
-        router.push('/');
+        window.location.href = '/';
       }, 300);
     } catch (error) {
       console.error('Fehler bei der Weiterleitung:', error);

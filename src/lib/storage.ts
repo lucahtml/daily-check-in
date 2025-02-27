@@ -91,6 +91,12 @@ export const saveEntry = (entry: DailyEntry): void => {
   if (!isBrowser) return;
   
   try {
+    // Sicherstellen, dass alle erforderlichen Felder vorhanden sind
+    if (!entry.id || !entry.date) {
+      console.error('Invalid entry data:', entry);
+      throw new Error('Ungültige Eintrags-Daten: ID und Datum sind erforderlich');
+    }
+    
     const entries = getEntries();
     const existingEntryIndex = entries.findIndex(e => e.id === entry.id);
     
@@ -106,7 +112,7 @@ export const saveEntry = (entry: DailyEntry): void => {
     updateStreakInfo(entries);
   } catch (error) {
     console.error('Error saving entry:', error);
-    alert('Es ist ein Fehler beim Speichern des Eintrags aufgetreten. Bitte versuche es erneut.');
+    throw error; // Fehler weitergeben, damit er in der UI behandelt werden kann
   }
 };
 
