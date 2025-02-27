@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Quote } from '@/lib/quotes';
 
 interface QuoteModalProps {
-  quote: Quote;
+  quote: Quote | null;
   isOpen: boolean;
   onClose: () => void;
   streak: number;
@@ -29,6 +29,10 @@ const QuoteModal: React.FC<QuoteModalProps> = ({
   }, [isOpen]);
 
   if (!isVisible && !isOpen) {
+    return null;
+  }
+
+  if (!quote) {
     return null;
   }
 

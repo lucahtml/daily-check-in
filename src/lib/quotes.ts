@@ -115,6 +115,14 @@ export const quotes: Quote[] = [
 
 // Get a random quote
 export function getRandomQuote(): Quote {
-  const randomIndex = Math.floor(Math.random() * quotes.length);
-  return quotes[randomIndex];
+  try {
+    const randomIndex = Math.floor(Math.random() * quotes.length);
+    return quotes[randomIndex];
+  } catch (error) {
+    console.error('Error getting random quote:', error);
+    return {
+      text: "The only way to do great work is to love what you do.",
+      author: "Steve Jobs"
+    };
+  }
 }

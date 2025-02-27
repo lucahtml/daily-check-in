@@ -31,7 +31,7 @@ export default function NewEntryPage() {
   
   // Modal state
   const [showQuoteModal, setShowQuoteModal] = useState(false);
-  const [quoteData, setQuoteData] = useState(getRandomQuote());
+  const [quoteData, setQuoteData] = useState(null);
   const [streakCount, setStreakCount] = useState(0);
   const [isMonthlyCheckpoint, setIsMonthlyCheckpoint] = useState(false);
   
@@ -101,37 +101,26 @@ export default function NewEntryPage() {
           setRemSleepMinutes(remMinutes.toString());
           
           setHrv(todayEntry.sleep?.hrv?.toString() || '0');
-          
-          // Nutrition data
-          if (todayEntry.nutrition) {
-            setLastMeal(todayEntry.nutrition.lastMeal || '');
-            setProteinIntake(todayEntry.nutrition.proteinIntake?.toString() || '');
-            setCheatmeal(todayEntry.nutrition.cheatmeal || '');
-            setAlcohol(todayEntry.nutrition.alcohol || false);
-            setAlcoholTime(todayEntry.nutrition.alcoholTime || '');
-          } else {
-            // Fallback für ältere Einträge
-            setLastMeal(todayEntry.lastMeal || '');
-            setProteinIntake(todayEntry.proteinIntake?.toString() || '');
-          }
-          
+          setLastMeal(todayEntry.nutrition?.lastMeal || '');
+          setProteinIntake(todayEntry.nutrition?.proteinIntake?.toString() || '0');
+          setCheatmeal(todayEntry.nutrition?.cheatmeal || '');
+          setAlcohol(todayEntry.nutrition?.alcohol || false);
+          setAlcoholTime(todayEntry.nutrition?.alcoholTime || '');
           setBedtimeRoutine(todayEntry.bedtimeRoutine || BedtimeRoutineStatus.COMPLETED);
           setEnergyLevel(todayEntry.energyLevel || 5);
           setMood(todayEntry.mood || 5);
           setGratitude(todayEntry.gratitude || '');
           setDidExercise(todayEntry.exercise?.didExercise || false);
           
-          // Exercise activities
           if (todayEntry.exercise?.activities && todayEntry.exercise.activities.length > 0) {
             setExerciseActivities(todayEntry.exercise.activities);
           }
           
-          // Self Care
           if (todayEntry.selfCare) {
-            setSauna(todayEntry.selfCare.sauna || { done: false, time: '', duration: 0 });
-            setIceBath(todayEntry.selfCare.iceBath || { done: false, time: '', duration: 0 });
-            setStretching(todayEntry.selfCare.stretching || { done: false, time: '', duration: 0 });
-            setReading(todayEntry.selfCare.reading || { done: false, time: '', duration: 0 });
+            setSauna(todayEntry.selfCare.sauna || { ...defaultSelfCareActivity });
+            setIceBath(todayEntry.selfCare.iceBath || { ...defaultSelfCareActivity });
+            setStretching(todayEntry.selfCare.stretching || { ...defaultSelfCareActivity });
+            setReading(todayEntry.selfCare.reading || { ...defaultSelfCareActivity });
           }
           
           setComments(todayEntry.comments || '');
