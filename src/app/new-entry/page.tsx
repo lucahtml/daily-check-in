@@ -270,11 +270,20 @@ export default function NewEntryPage() {
         streakInfo.monthlyCheckpoints.length > prevStreakInfo.monthlyCheckpoints.length
       );
       
-      // Show quote modal
-      setQuoteData(getRandomQuote());
-      setShowQuoteModal(true);
+      // Show quote modal with a slight delay to ensure state updates are processed
+      setTimeout(() => {
+        try {
+          const quote = getRandomQuote();
+          console.log('Showing quote modal with quote:', quote);
+          setQuoteData(quote);
+          setShowQuoteModal(true);
+        } catch (error) {
+          console.error('Error showing quote modal:', error);
+          // Fallback: Redirect directly to home if modal fails
+          router.push('/');
+        }
+      }, 100);
       
-      // Redirect to home page after closing modal
       setIsSaving(false);
     } catch (error) {
       console.error('Error saving entry:', error);
@@ -284,8 +293,17 @@ export default function NewEntryPage() {
   };
   
   const handleCloseModal = () => {
-    setShowQuoteModal(false);
-    router.push('/');
+    try {
+      setShowQuoteModal(false);
+      // Verzögere die Weiterleitung, um sicherzustellen, dass das Modal geschlossen ist
+      setTimeout(() => {
+        router.push('/');
+      }, 300);
+    } catch (error) {
+      console.error('Fehler bei der Weiterleitung:', error);
+      // Fallback-Weiterleitung mit window.location
+      window.location.href = '/';
+    }
   };
   
   if (isLoading) {
