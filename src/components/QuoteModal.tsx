@@ -28,6 +28,16 @@ const QuoteModal: React.FC<QuoteModalProps> = ({
     }
   }, [isOpen]);
 
+  const handleClose = () => {
+    try {
+      onClose();
+    } catch (error) {
+      console.error('Error in modal close handler:', error);
+      // Fallback navigation if the onClose handler fails
+      window.location.href = '/';
+    }
+  };
+
   // Wenn das Modal nicht sichtbar und nicht geöffnet ist, nichts rendern
   if (!isVisible && !isOpen) {
     return null;
@@ -40,7 +50,7 @@ const QuoteModal: React.FC<QuoteModalProps> = ({
         className={`fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50 transition-opacity duration-300 ${
           isOpen ? 'opacity-100' : 'opacity-0'
         }`}
-        onClick={onClose}
+        onClick={handleClose}
       >
         <div 
           className={`bg-white rounded-lg shadow-xl max-w-md w-full mx-4 p-6 transform transition-transform duration-300 ${
@@ -70,7 +80,7 @@ const QuoteModal: React.FC<QuoteModalProps> = ({
           <div className="text-center">
             <button
               className="btn-primary"
-              onClick={onClose}
+              onClick={handleClose}
             >
               Continue
             </button>
@@ -85,7 +95,7 @@ const QuoteModal: React.FC<QuoteModalProps> = ({
       className={`fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50 transition-opacity duration-300 ${
         isOpen ? 'opacity-100' : 'opacity-0'
       }`}
-      onClick={onClose}
+      onClick={handleClose}
     >
       <div 
         className={`bg-white rounded-lg shadow-xl max-w-md w-full mx-4 p-6 transform transition-transform duration-300 ${
@@ -120,7 +130,7 @@ const QuoteModal: React.FC<QuoteModalProps> = ({
         <div className="text-center">
           <button
             className="btn-primary"
-            onClick={onClose}
+            onClick={handleClose}
           >
             Continue
           </button>

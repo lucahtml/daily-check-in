@@ -271,8 +271,14 @@ export default function NewEntryPage() {
           streakInfo.monthlyCheckpoints.length > prevStreakInfo.monthlyCheckpoints.length
         );
         
+        // Verzicht auf komplexe Navigation und stattdessen einfache Weiterleitung
         // Direkt zur Startseite weiterleiten ohne Modal anzuzeigen
-        window.location.href = '/';
+        setIsSaving(false);
+        
+        // Verwende einen einfachen Link-Klick anstelle von window.location oder router
+        const homeLink = document.createElement('a');
+        homeLink.href = '/';
+        homeLink.click();
       } catch (saveError) {
         console.error('Error in saveEntry function:', saveError);
         alert(`Fehler beim Speichern: ${saveError.message || 'Unbekannter Fehler'}`);
@@ -286,16 +292,26 @@ export default function NewEntryPage() {
     }
   };
   
+  // Handle close modal
   const handleCloseModal = () => {
     try {
       setShowQuoteModal(false);
       // Verzögere die Weiterleitung, um sicherzustellen, dass das Modal geschlossen ist
       setTimeout(() => {
-        window.location.href = '/';
+        try {
+          // Verwende einen einfachen Link-Klick anstelle von window.location oder router
+          const homeLink = document.createElement('a');
+          homeLink.href = '/';
+          homeLink.click();
+        } catch (navError) {
+          console.error('Fehler bei der Navigation:', navError);
+          // Fallback, wenn der Link-Klick fehlschlägt
+          window.location.href = '/';
+        }
       }, 300);
     } catch (error) {
       console.error('Fehler bei der Weiterleitung:', error);
-      // Fallback-Weiterleitung mit window.location
+      // Fallback bei allgemeinen Fehlern
       window.location.href = '/';
     }
   };
