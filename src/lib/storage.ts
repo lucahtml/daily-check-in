@@ -1,12 +1,8 @@
 export interface SleepData {
-  totalSleepHours: number;
-  totalSleepMinutes: number;
-  lightSleepHours: number;
-  lightSleepMinutes: number;
-  deepSleepHours: number;
-  deepSleepMinutes: number;
-  remSleepHours: number;
-  remSleepMinutes: number;
+  totalSleep: number;
+  lightSleep: number;
+  deepSleep: number;
+  remSleep: number;
   hrv: number;
 }
 
