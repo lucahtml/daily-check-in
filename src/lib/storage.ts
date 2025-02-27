@@ -1,8 +1,12 @@
 export interface SleepData {
-  totalSleep: number;
-  lightSleep: number;
-  deepSleep: number;
-  remSleep: number;
+  totalSleepHours: number;
+  totalSleepMinutes: number;
+  lightSleepHours: number;
+  lightSleepMinutes: number;
+  deepSleepHours: number;
+  deepSleepMinutes: number;
+  remSleepHours: number;
+  remSleepMinutes: number;
   hrv: number;
 }
 
@@ -30,6 +34,14 @@ export interface SelfCareData {
   reading: SelfCareActivity;
 }
 
+export interface NutritionData {
+  lastMeal: string;
+  proteinIntake: number;
+  cheatmeal: string;
+  alcohol: boolean;
+  alcoholTime?: string;
+}
+
 export enum BedtimeRoutineStatus {
   COMPLETED = "completed",
   PARTIAL = "partial",
@@ -40,8 +52,7 @@ export interface DailyEntry {
   id: string;
   date: string;
   sleep: SleepData;
-  lastMeal: string;
-  proteinIntake: number;
+  nutrition: NutritionData;
   bedtimeRoutine: BedtimeRoutineStatus;
   energyLevel: number;
   mood: number;
