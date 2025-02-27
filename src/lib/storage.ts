@@ -112,6 +112,11 @@ export const saveEntry = (entry: DailyEntry): void => {
 
 // Get a specific entry by date
 export const getEntryByDate = (date: string): DailyEntry | null => {
+  if (!date) {
+    console.error('No date provided to getEntryByDate');
+    return null;
+  }
+  
   try {
     const entries = getEntries();
     return entries.find(entry => entry.date === date) || null;

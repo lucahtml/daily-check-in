@@ -36,7 +36,7 @@ export default function NewEntryPage() {
   const [isMonthlyCheckpoint, setIsMonthlyCheckpoint] = useState(false);
   
   // Form state
-  const [date, setDate] = useState(searchParams?.get('date') || getTodayFormatted());
+  const [date, setDate] = useState('');
   
   // Schlaf - Stunden und Minuten statt nur Minuten
   const [totalSleepHours, setTotalSleepHours] = useState('');
@@ -72,7 +72,11 @@ export default function NewEntryPage() {
   useEffect(() => {
     const loadTodayEntry = () => {
       try {
-        const todayEntry = getEntryByDate(date);
+        // Set initial date from searchParams or today's date
+        const initialDate = searchParams?.get('date') || getTodayFormatted();
+        setDate(initialDate);
+        
+        const todayEntry = getEntryByDate(initialDate);
         
         if (todayEntry) {
           // Populate form with existing data
@@ -133,7 +137,7 @@ export default function NewEntryPage() {
     };
     
     loadTodayEntry();
-  }, [date]);
+  }, [searchParams]);
   
   // Add exercise activity
   const addExerciseActivity = () => {
@@ -175,6 +179,10 @@ export default function NewEntryPage() {
     
     try {
       console.log('Starting form submission...');
+      
+      if (!date) {
+        throw new Error('Datum ist erforderlich');
+      }
       
       // Prepare sleep data
       const totalSleep = parseInt(totalSleepHours || '0') * 60 + parseInt(totalSleepMinutes || '0');
