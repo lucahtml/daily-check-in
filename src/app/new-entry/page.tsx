@@ -270,20 +270,8 @@ export default function NewEntryPage() {
         streakInfo.monthlyCheckpoints.length > prevStreakInfo.monthlyCheckpoints.length
       );
       
-      // Show quote modal with a slight delay to ensure state updates are processed
-      setTimeout(() => {
-        try {
-          const quote = getRandomQuote();
-          console.log('Showing quote modal with quote:', quote);
-          setQuoteData(quote);
-          setShowQuoteModal(true);
-        } catch (error) {
-          console.error('Error showing quote modal:', error);
-          // Fallback: Redirect directly to home if modal fails
-          router.push('/');
-        }
-      }, 100);
-      
+      // Direkt zur Startseite weiterleiten ohne Modal anzuzeigen
+      router.push('/');
       setIsSaving(false);
     } catch (error) {
       console.error('Error saving entry:', error);
