@@ -99,8 +99,20 @@ export default function NewEntryPage() {
         setRemSleepMinutes(remMinutes.toString());
         
         setHrv(todayEntry.sleep.hrv.toString());
-        setLastMeal(todayEntry.lastMeal);
-        setProteinIntake(todayEntry.proteinIntake ? todayEntry.proteinIntake.toString() : '');
+        
+        // Nutrition data
+        if (todayEntry.nutrition) {
+          setLastMeal(todayEntry.nutrition.lastMeal);
+          setProteinIntake(todayEntry.nutrition.proteinIntake ? todayEntry.nutrition.proteinIntake.toString() : '');
+          setCheatmeal(todayEntry.nutrition.cheatmeal || '');
+          setAlcohol(todayEntry.nutrition.alcohol || false);
+          setAlcoholTime(todayEntry.nutrition.alcoholTime || '');
+        } else {
+          // Fallback für ältere Einträge
+          setLastMeal(todayEntry.lastMeal || '');
+          setProteinIntake(todayEntry.proteinIntake ? todayEntry.proteinIntake.toString() : '');
+        }
+        
         setBedtimeRoutine(todayEntry.bedtimeRoutine || BedtimeRoutineStatus.COMPLETED);
         setEnergyLevel(todayEntry.energyLevel);
         setMood(todayEntry.mood);
