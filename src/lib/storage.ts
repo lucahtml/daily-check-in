@@ -69,7 +69,17 @@ export const getEntries = (): DailyEntry[] => {
   
   try {
     const storedEntries = localStorage.getItem(STORAGE_KEY);
-    return storedEntries ? JSON.parse(storedEntries) : [];
+    if (storedEntries) {
+      try {
+        return JSON.parse(storedEntries);
+      } catch (error) {
+        console.error('Error parsing entries:', error);
+        localStorage.removeItem(STORAGE_KEY);
+        return [];
+      }
+    } else {
+      return [];
+    }
   } catch (error) {
     console.error('Error retrieving entries:', error);
     return [];
@@ -96,24 +106,33 @@ export const saveEntry = (entry: DailyEntry): void => {
     updateStreakInfo(entries);
   } catch (error) {
     console.error('Error saving entry:', error);
+    alert('Es ist ein Fehler beim Speichern des Eintrags aufgetreten. Bitte versuche es erneut.');
   }
 };
 
 // Get a specific entry by date
-export function getEntryByDate(date: string): DailyEntry | undefined {
-  if (!isBrowser) return undefined;
-  
-  const entries = getEntries();
-  return entries.find(entry => entry.date === date);
-}
+export const getEntryByDate = (date: string): DailyEntry | null => {
+  try {
+    const entries = getEntries();
+    return entries.find(entry => entry.date === date) || null;
+  } catch (error) {
+    console.error('Error finding entry by date:', error);
+    return null;
+  }
+};
 
 // Get a specific entry by ID
-export function getEntryById(id: string): DailyEntry | undefined {
-  if (!isBrowser) return undefined;
-  
-  const entries = getEntries();
-  return entries.find(entry => entry.id === id);
-}
+export const getEntryById = (id: string): DailyEntry | null => {
+  try {
+    if (!isBrowser) return null;
+    
+    const entries = getEntries();
+    return entries.find(entry => entry.id === id) || null;
+  } catch (error) {
+    console.error('Error finding entry by ID:', error);
+    return null;
+  }
+};
 
 // Delete an entry
 export const deleteEntry = (id: string): void => {
@@ -141,7 +160,12 @@ export const getTodayFormatted = (): string => {
 
 // Generate a unique ID
 export const generateId = (): string => {
-  return Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
+  try {
+    return Date.now().toString(36) + Math.random().toString(36).substring(2);
+  } catch (error) {
+    console.error('Error generating ID:', error);
+    return `id-${Date.now()}`;
+  }
 };
 
 // Get streak information

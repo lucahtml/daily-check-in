@@ -71,72 +71,76 @@ export default function NewEntryPage() {
   // Load existing entry for today if it exists
   useEffect(() => {
     const loadTodayEntry = () => {
-      const todayEntry = getEntryByDate(date);
-      
-      if (todayEntry) {
-        // Populate form with existing data
-        const totalSleep = todayEntry.sleep.totalSleep;
-        const hours = Math.floor(totalSleep / 60);
-        const minutes = totalSleep % 60;
-        setTotalSleepHours(hours.toString());
-        setTotalSleepMinutes(minutes.toString());
+      try {
+        const todayEntry = getEntryByDate(date);
         
-        const lightSleep = todayEntry.sleep.lightSleep;
-        const lightHours = Math.floor(lightSleep / 60);
-        const lightMinutes = lightSleep % 60;
-        setLightSleepHours(lightHours.toString());
-        setLightSleepMinutes(lightMinutes.toString());
-        
-        const deepSleep = todayEntry.sleep.deepSleep;
-        const deepHours = Math.floor(deepSleep / 60);
-        const deepMinutes = deepSleep % 60;
-        setDeepSleepHours(deepHours.toString());
-        setDeepSleepMinutes(deepMinutes.toString());
-        
-        const remSleep = todayEntry.sleep.remSleep;
-        const remHours = Math.floor(remSleep / 60);
-        const remMinutes = remSleep % 60;
-        setRemSleepHours(remHours.toString());
-        setRemSleepMinutes(remMinutes.toString());
-        
-        setHrv(todayEntry.sleep.hrv.toString());
-        
-        // Nutrition data
-        if (todayEntry.nutrition) {
-          setLastMeal(todayEntry.nutrition.lastMeal);
-          setProteinIntake(todayEntry.nutrition.proteinIntake ? todayEntry.nutrition.proteinIntake.toString() : '');
-          setCheatmeal(todayEntry.nutrition.cheatmeal || '');
-          setAlcohol(todayEntry.nutrition.alcohol || false);
-          setAlcoholTime(todayEntry.nutrition.alcoholTime || '');
-        } else {
-          // Fallback für ältere Einträge
-          setLastMeal(todayEntry.lastMeal || '');
-          setProteinIntake(todayEntry.proteinIntake ? todayEntry.proteinIntake.toString() : '');
+        if (todayEntry) {
+          // Populate form with existing data
+          const totalSleep = todayEntry.sleep?.totalSleep || 0;
+          const hours = Math.floor(totalSleep / 60);
+          const minutes = totalSleep % 60;
+          setTotalSleepHours(hours.toString());
+          setTotalSleepMinutes(minutes.toString());
+          
+          const lightSleep = todayEntry.sleep?.lightSleep || 0;
+          const lightHours = Math.floor(lightSleep / 60);
+          const lightMinutes = lightSleep % 60;
+          setLightSleepHours(lightHours.toString());
+          setLightSleepMinutes(lightMinutes.toString());
+          
+          const deepSleep = todayEntry.sleep?.deepSleep || 0;
+          const deepHours = Math.floor(deepSleep / 60);
+          const deepMinutes = deepSleep % 60;
+          setDeepSleepHours(deepHours.toString());
+          setDeepSleepMinutes(deepMinutes.toString());
+          
+          const remSleep = todayEntry.sleep?.remSleep || 0;
+          const remHours = Math.floor(remSleep / 60);
+          const remMinutes = remSleep % 60;
+          setRemSleepHours(remHours.toString());
+          setRemSleepMinutes(remMinutes.toString());
+          
+          setHrv(todayEntry.sleep?.hrv?.toString() || '0');
+          
+          // Nutrition data
+          if (todayEntry.nutrition) {
+            setLastMeal(todayEntry.nutrition.lastMeal || '');
+            setProteinIntake(todayEntry.nutrition.proteinIntake?.toString() || '');
+            setCheatmeal(todayEntry.nutrition.cheatmeal || '');
+            setAlcohol(todayEntry.nutrition.alcohol || false);
+            setAlcoholTime(todayEntry.nutrition.alcoholTime || '');
+          } else {
+            // Fallback für ältere Einträge
+            setLastMeal(todayEntry.lastMeal || '');
+            setProteinIntake(todayEntry.proteinIntake?.toString() || '');
+          }
+          
+          setBedtimeRoutine(todayEntry.bedtimeRoutine || BedtimeRoutineStatus.COMPLETED);
+          setEnergyLevel(todayEntry.energyLevel || 5);
+          setMood(todayEntry.mood || 5);
+          setGratitude(todayEntry.gratitude || '');
+          setDidExercise(todayEntry.exercise?.didExercise || false);
+          
+          // Exercise activities
+          if (todayEntry.exercise?.activities && todayEntry.exercise.activities.length > 0) {
+            setExerciseActivities(todayEntry.exercise.activities);
+          }
+          
+          // Self Care
+          if (todayEntry.selfCare) {
+            setSauna(todayEntry.selfCare.sauna || { done: false, time: '', duration: 0 });
+            setIceBath(todayEntry.selfCare.iceBath || { done: false, time: '', duration: 0 });
+            setStretching(todayEntry.selfCare.stretching || { done: false, time: '', duration: 0 });
+            setReading(todayEntry.selfCare.reading || { done: false, time: '', duration: 0 });
+          }
+          
+          setComments(todayEntry.comments || '');
         }
-        
-        setBedtimeRoutine(todayEntry.bedtimeRoutine || BedtimeRoutineStatus.COMPLETED);
-        setEnergyLevel(todayEntry.energyLevel);
-        setMood(todayEntry.mood);
-        setGratitude(todayEntry.gratitude);
-        setDidExercise(todayEntry.exercise.didExercise);
-        
-        // Exercise activities
-        if (todayEntry.exercise.activities && todayEntry.exercise.activities.length > 0) {
-          setExerciseActivities(todayEntry.exercise.activities);
-        }
-        
-        // Self Care
-        if (todayEntry.selfCare) {
-          setSauna(todayEntry.selfCare.sauna);
-          setIceBath(todayEntry.selfCare.iceBath);
-          setStretching(todayEntry.selfCare.stretching);
-          setReading(todayEntry.selfCare.reading);
-        }
-        
-        setComments(todayEntry.comments);
+      } catch (error) {
+        console.error('Error loading today entry:', error);
+      } finally {
+        setIsLoading(false);
       }
-      
-      setIsLoading(false);
     };
     
     loadTodayEntry();
@@ -181,11 +185,15 @@ export default function NewEntryPage() {
     setIsSaving(true);
     
     try {
+      console.log('Starting form submission...');
+      
       // Prepare sleep data
       const totalSleep = parseInt(totalSleepHours || '0') * 60 + parseInt(totalSleepMinutes || '0');
       const lightSleep = parseInt(lightSleepHours || '0') * 60 + parseInt(lightSleepMinutes || '0');
       const deepSleep = parseInt(deepSleepHours || '0') * 60 + parseInt(deepSleepMinutes || '0');
       const remSleep = parseInt(remSleepHours || '0') * 60 + parseInt(remSleepMinutes || '0');
+      
+      console.log('Sleep data prepared:', { totalSleep, lightSleep, deepSleep, remSleep });
       
       const sleepData: SleepData = {
         totalSleep,
@@ -198,49 +206,61 @@ export default function NewEntryPage() {
       // Prepare exercise data
       const exerciseData: ExerciseData = {
         didExercise,
-        activities: didExercise ? exerciseActivities : []
+        activities: didExercise ? exerciseActivities.filter(a => a.type.trim() !== '') : []
       };
       
       // Prepare self-care data
       const selfCareData: SelfCareData = {
-        sauna,
-        iceBath,
-        stretching,
-        reading
+        sauna: sauna || { done: false, time: '', duration: 0 },
+        iceBath: iceBath || { done: false, time: '', duration: 0 },
+        stretching: stretching || { done: false, time: '', duration: 0 },
+        reading: reading || { done: false, time: '', duration: 0 }
       };
       
       // Prepare nutrition data
       const nutritionData = {
-        lastMeal,
+        lastMeal: lastMeal || '',
         proteinIntake: parseInt(proteinIntake) || 0,
-        cheatmeal,
-        alcohol,
-        alcoholTime: alcohol ? alcoholTime : undefined
+        cheatmeal: cheatmeal || '',
+        alcohol: alcohol || false,
+        alcoholTime: alcohol && alcoholTime ? alcoholTime : ''
       };
       
+      console.log('All data prepared, creating entry object...');
+      
       // Create or update entry
+      const newId = generateId();
+      console.log('Generated ID:', newId);
+      
       const entry: DailyEntry = {
-        id: generateId(),
+        id: newId,
         date,
         sleep: sleepData,
         nutrition: nutritionData,
-        bedtimeRoutine,
-        energyLevel,
-        mood,
-        gratitude,
+        bedtimeRoutine: bedtimeRoutine || BedtimeRoutineStatus.COMPLETED,
+        energyLevel: energyLevel || 5,
+        mood: mood || 5,
+        gratitude: gratitude || '',
         exercise: exerciseData,
         selfCare: selfCareData,
-        comments
+        comments: comments || ''
       };
       
       // Check if entry for this date already exists
       const existingEntry = getEntryByDate(date);
       if (existingEntry) {
+        console.log('Updating existing entry with ID:', existingEntry.id);
         entry.id = existingEntry.id;
+      } else {
+        console.log('Creating new entry with ID:', entry.id);
       }
+      
+      console.log('Saving entry...');
       
       // Save entry
       saveEntry(entry);
+      
+      console.log('Entry saved successfully!');
       
       // Update streak info and prepare reward
       const allEntries = getEntries();
