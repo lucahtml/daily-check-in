@@ -61,10 +61,11 @@ export default function NewEntryPage() {
   const [exerciseActivities, setExerciseActivities] = useState<ExerciseActivity[]>([{ type: '', duration: 0, time: '' }]);
   
   // Self Care
-  const [sauna, setSauna] = useState<SelfCareActivity>({ done: false, time: '', duration: 0 });
-  const [iceBath, setIceBath] = useState<SelfCareActivity>({ done: false, time: '', duration: 0 });
-  const [stretching, setStretching] = useState<SelfCareActivity>({ done: false, time: '', duration: 0 });
-  const [reading, setReading] = useState<SelfCareActivity>({ done: false, time: '', duration: 0 });
+  const defaultSelfCareActivity: SelfCareActivity = { done: false, time: '', duration: 0 };
+  const [sauna, setSauna] = useState<SelfCareActivity>({ ...defaultSelfCareActivity });
+  const [iceBath, setIceBath] = useState<SelfCareActivity>({ ...defaultSelfCareActivity });
+  const [stretching, setStretching] = useState<SelfCareActivity>({ ...defaultSelfCareActivity });
+  const [reading, setReading] = useState<SelfCareActivity>({ ...defaultSelfCareActivity });
   const [comments, setComments] = useState('');
   
   // Load existing entry for today if it exists
@@ -179,84 +180,90 @@ export default function NewEntryPage() {
     e.preventDefault();
     setIsSaving(true);
     
-    // Prepare sleep data
-    const totalSleep = parseInt(totalSleepHours || '0') * 60 + parseInt(totalSleepMinutes || '0');
-    const lightSleep = parseInt(lightSleepHours || '0') * 60 + parseInt(lightSleepMinutes || '0');
-    const deepSleep = parseInt(deepSleepHours || '0') * 60 + parseInt(deepSleepMinutes || '0');
-    const remSleep = parseInt(remSleepHours || '0') * 60 + parseInt(remSleepMinutes || '0');
-    
-    const sleepData: SleepData = {
-      totalSleep,
-      lightSleep,
-      deepSleep,
-      remSleep,
-      hrv: parseInt(hrv) || 0
-    };
-    
-    // Prepare exercise data
-    const exerciseData: ExerciseData = {
-      didExercise,
-      activities: didExercise ? exerciseActivities : []
-    };
-    
-    // Prepare self-care data
-    const selfCareData: SelfCareData = {
-      sauna,
-      iceBath,
-      stretching,
-      reading
-    };
-    
-    // Prepare nutrition data
-    const nutritionData = {
-      lastMeal,
-      proteinIntake: parseInt(proteinIntake) || 0,
-      cheatmeal,
-      alcohol,
-      alcoholTime: alcohol ? alcoholTime : undefined
-    };
-    
-    // Create or update entry
-    const entry: DailyEntry = {
-      id: generateId(),
-      date,
-      sleep: sleepData,
-      nutrition: nutritionData,
-      bedtimeRoutine,
-      energyLevel,
-      mood,
-      gratitude,
-      exercise: exerciseData,
-      selfCare: selfCareData,
-      comments
-    };
-    
-    // Check if entry for this date already exists
-    const existingEntry = getEntryByDate(date);
-    if (existingEntry) {
-      entry.id = existingEntry.id;
+    try {
+      // Prepare sleep data
+      const totalSleep = parseInt(totalSleepHours || '0') * 60 + parseInt(totalSleepMinutes || '0');
+      const lightSleep = parseInt(lightSleepHours || '0') * 60 + parseInt(lightSleepMinutes || '0');
+      const deepSleep = parseInt(deepSleepHours || '0') * 60 + parseInt(deepSleepMinutes || '0');
+      const remSleep = parseInt(remSleepHours || '0') * 60 + parseInt(remSleepMinutes || '0');
+      
+      const sleepData: SleepData = {
+        totalSleep,
+        lightSleep,
+        deepSleep,
+        remSleep,
+        hrv: parseInt(hrv) || 0
+      };
+      
+      // Prepare exercise data
+      const exerciseData: ExerciseData = {
+        didExercise,
+        activities: didExercise ? exerciseActivities : []
+      };
+      
+      // Prepare self-care data
+      const selfCareData: SelfCareData = {
+        sauna,
+        iceBath,
+        stretching,
+        reading
+      };
+      
+      // Prepare nutrition data
+      const nutritionData = {
+        lastMeal,
+        proteinIntake: parseInt(proteinIntake) || 0,
+        cheatmeal,
+        alcohol,
+        alcoholTime: alcohol ? alcoholTime : undefined
+      };
+      
+      // Create or update entry
+      const entry: DailyEntry = {
+        id: generateId(),
+        date,
+        sleep: sleepData,
+        nutrition: nutritionData,
+        bedtimeRoutine,
+        energyLevel,
+        mood,
+        gratitude,
+        exercise: exerciseData,
+        selfCare: selfCareData,
+        comments
+      };
+      
+      // Check if entry for this date already exists
+      const existingEntry = getEntryByDate(date);
+      if (existingEntry) {
+        entry.id = existingEntry.id;
+      }
+      
+      // Save entry
+      saveEntry(entry);
+      
+      // Update streak info and prepare reward
+      const allEntries = getEntries();
+      const streakInfo = updateStreakInfo(allEntries);
+      setStreakCount(streakInfo.currentStreak);
+      
+      // Check if we've reached a monthly checkpoint
+      const prevStreakInfo = getStreakInfo();
+      setIsMonthlyCheckpoint(
+        streakInfo.monthlyCheckpoints.length > prevStreakInfo.monthlyCheckpoints.length
+      );
+      
+      // Show quote modal
+      setQuoteData(getRandomQuote());
+      setShowQuoteModal(true);
+      
+      // Redirect to home page after closing modal
+      setIsSaving(false);
+    } catch (error) {
+      console.error('Error saving entry:', error);
+      alert('Es ist ein Fehler beim Speichern des Eintrags aufgetreten. Bitte versuche es erneut.');
+      setIsSaving(false);
     }
-    
-    // Save entry
-    saveEntry(entry);
-    
-    // Update streak info and prepare reward
-    const allEntries = getEntries();
-    const streakInfo = updateStreakInfo(allEntries);
-    setStreakCount(streakInfo.currentStreak);
-    
-    // Check if we've reached a monthly checkpoint
-    const prevStreakInfo = getStreakInfo();
-    setIsMonthlyCheckpoint(
-      streakInfo.monthlyCheckpoints.length > prevStreakInfo.monthlyCheckpoints.length
-    );
-    
-    // Show quote modal
-    setQuoteData(getRandomQuote());
-    setShowQuoteModal(true);
-    
-    // Redirect to home page after closing modal
-    setIsSaving(false);
   };
   
   const handleCloseModal = () => {

@@ -158,11 +158,11 @@ export default function EntryDetailPage({ params }: EntryDetailPageProps) {
           <div className="grid grid-cols-2 gap-4">
             <div>
               <p className="text-gray-600">Letzte Mahlzeit:</p>
-              <p className="font-medium">{entry.nutrition?.lastMeal || entry.lastMeal} Uhr</p>
+              <p className="font-medium">{entry.nutrition?.lastMeal} Uhr</p>
             </div>
             <div>
               <p className="text-gray-600">Proteinaufnahme:</p>
-              <p className="font-medium">{entry.nutrition?.proteinIntake || entry.proteinIntake || 0} g</p>
+              <p className="font-medium">{entry.nutrition?.proteinIntake || 0} g</p>
             </div>
             {entry.nutrition?.cheatmeal && (
               <div>
