@@ -1,7 +1,10 @@
 {
-  "framework": null,
-  "buildCommand": "npm run static-build",
+  "framework": "nextjs",
+  "buildCommand": "npm run build",
   "outputDirectory": "out",
   "devCommand": "npm run dev",
-  "installCommand": "npm install"
+  "installCommand": "npm install",
+  "routes": [
+    { "src": "/new-entry", "dest": "/new-entry" }
+  ]
 }
