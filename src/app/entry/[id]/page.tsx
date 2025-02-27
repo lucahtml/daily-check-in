@@ -123,19 +123,27 @@ export default function EntryDetailPage({ params }: EntryDetailPageProps) {
           <div className="grid grid-cols-2 gap-4">
             <div>
               <p className="text-gray-600">Gesamte Schlafzeit:</p>
-              <p className="font-medium">{entry.sleep.totalSleep} Minuten</p>
+              <p className="font-medium">
+                {Math.floor(entry.sleep.totalSleep / 60)} Std. {entry.sleep.totalSleep % 60} Min.
+              </p>
             </div>
             <div>
               <p className="text-gray-600">Leichter Schlaf:</p>
-              <p className="font-medium">{entry.sleep.lightSleep} Minuten</p>
+              <p className="font-medium">
+                {Math.floor(entry.sleep.lightSleep / 60)} Std. {entry.sleep.lightSleep % 60} Min.
+              </p>
             </div>
             <div>
               <p className="text-gray-600">Tiefer Schlaf:</p>
-              <p className="font-medium">{entry.sleep.deepSleep} Minuten</p>
+              <p className="font-medium">
+                {Math.floor(entry.sleep.deepSleep / 60)} Std. {entry.sleep.deepSleep % 60} Min.
+              </p>
             </div>
             <div>
               <p className="text-gray-600">REM-Schlaf:</p>
-              <p className="font-medium">{entry.sleep.remSleep} Minuten</p>
+              <p className="font-medium">
+                {Math.floor(entry.sleep.remSleep / 60)} Std. {entry.sleep.remSleep % 60} Min.
+              </p>
             </div>
             <div>
               <p className="text-gray-600">HRV:</p>
@@ -150,12 +158,24 @@ export default function EntryDetailPage({ params }: EntryDetailPageProps) {
           <div className="grid grid-cols-2 gap-4">
             <div>
               <p className="text-gray-600">Letzte Mahlzeit:</p>
-              <p className="font-medium">{entry.lastMeal} Uhr</p>
+              <p className="font-medium">{entry.nutrition?.lastMeal || entry.lastMeal} Uhr</p>
             </div>
             <div>
               <p className="text-gray-600">Proteinaufnahme:</p>
-              <p className="font-medium">{entry.proteinIntake || 0} g</p>
+              <p className="font-medium">{entry.nutrition?.proteinIntake || entry.proteinIntake || 0} g</p>
             </div>
+            {entry.nutrition?.cheatmeal && (
+              <div>
+                <p className="text-gray-600">Cheatmeal:</p>
+                <p className="font-medium">{entry.nutrition.cheatmeal}</p>
+              </div>
+            )}
+            {entry.nutrition?.alcohol && (
+              <div>
+                <p className="text-gray-600">Alkohol:</p>
+                <p className="font-medium">Ja, um {entry.nutrition.alcoholTime} Uhr</p>
+              </div>
+            )}
           </div>
         </section>
 
