@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
 import FormField from '@/components/FormField';
 import Slider from '@/components/Slider';
 import QuoteModal from '@/components/QuoteModal';
@@ -24,8 +23,8 @@ import {
 import { getRandomQuote } from '@/lib/quotes';
 
 export default function NewEntryPage() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
+  // Entferne router und verwende nur einfache Navigation
+  const searchParams = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   
@@ -80,64 +79,66 @@ export default function NewEntryPage() {
         
         if (todayEntry) {
           // Populate form with existing data
-          const totalSleep = todayEntry.sleep?.totalSleep || 0;
-          const hours = Math.floor(totalSleep / 60);
-          const minutes = totalSleep % 60;
-          setTotalSleepHours(hours.toString());
-          setTotalSleepMinutes(minutes.toString());
+          console.log('Loading existing entry:', todayEntry);
           
-          const lightSleep = todayEntry.sleep?.lightSleep || 0;
-          const lightHours = Math.floor(lightSleep / 60);
-          const lightMinutes = lightSleep % 60;
-          setLightSleepHours(lightHours.toString());
-          setLightSleepMinutes(lightMinutes.toString());
+          // Sleep data
+          const totalSleepMinutes = todayEntry.sleep.totalSleep || 0;
+          setTotalSleepHours(Math.floor(totalSleepMinutes / 60).toString());
+          setTotalSleepMinutes((totalSleepMinutes % 60).toString());
           
-          const deepSleep = todayEntry.sleep?.deepSleep || 0;
-          const deepHours = Math.floor(deepSleep / 60);
-          const deepMinutes = deepSleep % 60;
-          setDeepSleepHours(deepHours.toString());
-          setDeepSleepMinutes(deepMinutes.toString());
+          const lightSleepMinutes = todayEntry.sleep.lightSleep || 0;
+          setLightSleepHours(Math.floor(lightSleepMinutes / 60).toString());
+          setLightSleepMinutes((lightSleepMinutes % 60).toString());
           
-          const remSleep = todayEntry.sleep?.remSleep || 0;
-          const remHours = Math.floor(remSleep / 60);
-          const remMinutes = remSleep % 60;
-          setRemSleepHours(remHours.toString());
-          setRemSleepMinutes(remMinutes.toString());
+          const deepSleepMinutes = todayEntry.sleep.deepSleep || 0;
+          setDeepSleepHours(Math.floor(deepSleepMinutes / 60).toString());
+          setDeepSleepMinutes((deepSleepMinutes % 60).toString());
           
-          setHrv(todayEntry.sleep?.hrv?.toString() || '0');
-          setLastMeal(todayEntry.nutrition?.lastMeal || '');
-          setProteinIntake(todayEntry.nutrition?.proteinIntake?.toString() || '0');
-          setCheatmeal(todayEntry.nutrition?.cheatmeal || '');
-          setAlcohol(todayEntry.nutrition?.alcohol || false);
-          setAlcoholTime(todayEntry.nutrition?.alcoholTime || '');
+          const remSleepMinutes = todayEntry.sleep.remSleep || 0;
+          setRemSleepHours(Math.floor(remSleepMinutes / 60).toString());
+          setRemSleepMinutes((remSleepMinutes % 60).toString());
+          
+          setHrv(todayEntry.sleep.hrv?.toString() || '');
+          
+          // Nutrition data
+          setLastMeal(todayEntry.nutrition.lastMeal || '');
+          setProteinIntake(todayEntry.nutrition.proteinIntake?.toString() || '');
+          setCheatmeal(todayEntry.nutrition.cheatmeal || '');
+          setAlcohol(todayEntry.nutrition.alcohol || false);
+          setAlcoholTime(todayEntry.nutrition.alcoholTime || '');
+          
+          // Other metrics
           setBedtimeRoutine(todayEntry.bedtimeRoutine || BedtimeRoutineStatus.COMPLETED);
           setEnergyLevel(todayEntry.energyLevel || 5);
           setMood(todayEntry.mood || 5);
           setGratitude(todayEntry.gratitude || '');
-          setDidExercise(todayEntry.exercise?.didExercise || false);
           
-          if (todayEntry.exercise?.activities && todayEntry.exercise.activities.length > 0) {
+          // Exercise data
+          setDidExercise(todayEntry.exercise.didExercise || false);
+          if (todayEntry.exercise.activities && todayEntry.exercise.activities.length > 0) {
             setExerciseActivities(todayEntry.exercise.activities);
           }
           
-          if (todayEntry.selfCare) {
-            setSauna(todayEntry.selfCare.sauna || { ...defaultSelfCareActivity });
-            setIceBath(todayEntry.selfCare.iceBath || { ...defaultSelfCareActivity });
-            setStretching(todayEntry.selfCare.stretching || { ...defaultSelfCareActivity });
-            setReading(todayEntry.selfCare.reading || { ...defaultSelfCareActivity });
-          }
+          // Self care data
+          setSauna(todayEntry.selfCare.sauna || { ...defaultSelfCareActivity });
+          setIceBath(todayEntry.selfCare.iceBath || { ...defaultSelfCareActivity });
+          setStretching(todayEntry.selfCare.stretching || { ...defaultSelfCareActivity });
+          setReading(todayEntry.selfCare.reading || { ...defaultSelfCareActivity });
           
           setComments(todayEntry.comments || '');
         }
+        
+        setIsLoading(false);
       } catch (error) {
-        console.error('Error loading today entry:', error);
-      } finally {
+        console.error('Error loading entry:', error);
         setIsLoading(false);
       }
     };
     
-    loadTodayEntry();
-  }, [searchParams]);
+    if (typeof window !== 'undefined') {
+      loadTodayEntry();
+    }
+  }, []);
   
   // Add exercise activity
   const addExerciseActivity = () => {
@@ -271,14 +272,11 @@ export default function NewEntryPage() {
           streakInfo.monthlyCheckpoints.length > prevStreakInfo.monthlyCheckpoints.length
         );
         
-        // Verzicht auf komplexe Navigation und stattdessen einfache Weiterleitung
-        // Direkt zur Startseite weiterleiten ohne Modal anzuzeigen
+        // Einfachste Methode zur Navigation verwenden
         setIsSaving(false);
         
-        // Verwende einen einfachen Link-Klick anstelle von window.location oder router
-        const homeLink = document.createElement('a');
-        homeLink.href = '/';
-        homeLink.click();
+        // Verwende eine einfache Weiterleitung ohne JavaScript-Methoden
+        document.location.href = '/';
       } catch (saveError) {
         console.error('Error in saveEntry function:', saveError);
         alert(`Fehler beim Speichern: ${saveError.message || 'Unbekannter Fehler'}`);
@@ -296,19 +294,8 @@ export default function NewEntryPage() {
   const handleCloseModal = () => {
     try {
       setShowQuoteModal(false);
-      // Verzögere die Weiterleitung, um sicherzustellen, dass das Modal geschlossen ist
-      setTimeout(() => {
-        try {
-          // Verwende einen einfachen Link-Klick anstelle von window.location oder router
-          const homeLink = document.createElement('a');
-          homeLink.href = '/';
-          homeLink.click();
-        } catch (navError) {
-          console.error('Fehler bei der Navigation:', navError);
-          // Fallback, wenn der Link-Klick fehlschlägt
-          window.location.href = '/';
-        }
-      }, 300);
+      // Direkt zur Startseite navigieren
+      document.location.href = '/';
     } catch (error) {
       console.error('Fehler bei der Weiterleitung:', error);
       // Fallback bei allgemeinen Fehlern
