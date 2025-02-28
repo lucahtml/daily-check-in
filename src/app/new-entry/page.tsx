@@ -67,72 +67,92 @@ export default function NewEntryPage() {
   const [reading, setReading] = useState<SelfCareActivity>({ ...defaultSelfCareActivity });
   const [comments, setComments] = useState('');
   
+  // Helper function to get labels for self care activities
+  const getSelfCareLabel = (key: keyof SelfCareData): string => {
+    const labels: Record<keyof SelfCareData, string> = {
+      sauna: 'Sauna',
+      iceBath: 'Eisbad',
+      stretching: 'Dehnen',
+      reading: 'Lesen'
+    };
+    return labels[key];
+  };
+  
+  // Self care activities object
+  const selfCareActivities: Record<keyof SelfCareData, SelfCareActivity> = {
+    sauna,
+    iceBath,
+    stretching,
+    reading
+  };
+  
   // Load existing entry for today if it exists
   useEffect(() => {
     const loadTodayEntry = () => {
-      try {
-        // Set initial date from searchParams or today's date
-        const initialDate = searchParams?.get('date') || getTodayFormatted();
-        setDate(initialDate);
+      const searchDate = searchParams?.get('date') || getTodayFormatted();
+      const todayEntry = getEntryByDate(searchDate);
+      
+      if (todayEntry) {
+        setDate(todayEntry.date);
         
-        const todayEntry = getEntryByDate(initialDate);
-        
-        if (todayEntry) {
-          // Populate form with existing data
-          console.log('Loading existing entry:', todayEntry);
-          
-          // Sleep data
-          const totalSleepMinutes = todayEntry.sleep.totalSleep || 0;
-          setTotalSleepHours(Math.floor(totalSleepMinutes / 60).toString());
-          setTotalSleepMinutes((totalSleepMinutes % 60).toString());
-          
-          const lightSleepMinutes = todayEntry.sleep.lightSleep || 0;
-          setLightSleepHours(Math.floor(lightSleepMinutes / 60).toString());
-          setLightSleepMinutes((lightSleepMinutes % 60).toString());
-          
-          const deepSleepMinutes = todayEntry.sleep.deepSleep || 0;
-          setDeepSleepHours(Math.floor(deepSleepMinutes / 60).toString());
-          setDeepSleepMinutes((deepSleepMinutes % 60).toString());
-          
-          const remSleepMinutes = todayEntry.sleep.remSleep || 0;
-          setRemSleepHours(Math.floor(remSleepMinutes / 60).toString());
-          setRemSleepMinutes((remSleepMinutes % 60).toString());
-          
-          setHrv(todayEntry.sleep.hrv?.toString() || '');
-          
-          // Nutrition data
-          setLastMeal(todayEntry.nutrition.lastMeal || '');
-          setProteinIntake(todayEntry.nutrition.proteinIntake?.toString() || '');
-          setCheatmeal(todayEntry.nutrition.cheatmeal || '');
-          setAlcohol(todayEntry.nutrition.alcohol || false);
-          setAlcoholTime(todayEntry.nutrition.alcoholTime || '');
-          
-          // Other metrics
-          setBedtimeRoutine(todayEntry.bedtimeRoutine || BedtimeRoutineStatus.COMPLETED);
-          setEnergyLevel(todayEntry.energyLevel || 5);
-          setMood(todayEntry.mood || 5);
-          setGratitude(todayEntry.gratitude || '');
-          
-          // Exercise data
-          setDidExercise(todayEntry.exercise.didExercise || false);
-          if (todayEntry.exercise.activities && todayEntry.exercise.activities.length > 0) {
-            setExerciseActivities(todayEntry.exercise.activities);
-          }
-          
-          // Self care data
-          setSauna(todayEntry.selfCare.sauna || { ...defaultSelfCareActivity });
-          setIceBath(todayEntry.selfCare.iceBath || { ...defaultSelfCareActivity });
-          setStretching(todayEntry.selfCare.stretching || { ...defaultSelfCareActivity });
-          setReading(todayEntry.selfCare.reading || { ...defaultSelfCareActivity });
-          
-          setComments(todayEntry.comments || '');
+        // Sleep data
+        const sleep = todayEntry.sleep || {};
+        if (sleep.totalSleep) {
+          setTotalSleepHours(Math.floor(sleep.totalSleep / 60).toString());
+          setTotalSleepMinutes((sleep.totalSleep % 60).toString());
+        }
+        if (sleep.lightSleep) {
+          setLightSleepHours(Math.floor(sleep.lightSleep / 60).toString());
+          setLightSleepMinutes((sleep.lightSleep % 60).toString());
+        }
+        if (sleep.deepSleep) {
+          setDeepSleepHours(Math.floor(sleep.deepSleep / 60).toString());
+          setDeepSleepMinutes((sleep.deepSleep % 60).toString());
+        }
+        if (sleep.remSleep) {
+          setRemSleepHours(Math.floor(sleep.remSleep / 60).toString());
+          setRemSleepMinutes((sleep.remSleep % 60).toString());
+        }
+        if (sleep.hrv) {
+          setHrv(sleep.hrv.toString());
         }
         
-        setIsLoading(false);
-      } catch (error) {
-        console.error('Error loading entry:', error);
-        setIsLoading(false);
+        // Nutrition data
+        const nutrition = todayEntry.nutrition || {};
+        setLastMeal(nutrition.lastMeal || '');
+        setProteinIntake(nutrition.proteinIntake?.toString() || '');
+        setCheatmeal(nutrition.cheatmeal || '');
+        setAlcohol(nutrition.alcohol || false);
+        setAlcoholTime(nutrition.alcoholTime || '');
+        
+        // Exercise data
+        const exercise = todayEntry.exercise || { didExercise: false, activities: [] };
+        setDidExercise(exercise.didExercise || false);
+        setExerciseActivities(exercise.activities || []);
+        
+        // Self care data
+        const selfCare = todayEntry.selfCare || {
+          sauna: { done: false },
+          iceBath: { done: false },
+          stretching: { done: false },
+          reading: { done: false }
+        };
+        setSauna(selfCare.sauna || { done: false });
+        setIceBath(selfCare.iceBath || { done: false });
+        setStretching(selfCare.stretching || { done: false });
+        setReading(selfCare.reading || { done: false });
+        
+        // Other fields
+        setEnergyLevel(todayEntry.energyLevel || 5);
+        setMood(todayEntry.mood || 5);
+        setBedtimeRoutine(todayEntry.bedtimeRoutine || BedtimeRoutineStatus.COMPLETED);
+        setGratitude(todayEntry.gratitude || '');
+        setComments(todayEntry.comments || '');
+      } else {
+        setDate(searchDate);
       }
+      
+      setIsLoading(false);
     };
     
     if (typeof window !== 'undefined') {
@@ -174,8 +194,13 @@ export default function NewEntryPage() {
   };
   
   // Handle form submission
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (isSaving) {
+      return; // Verhindere doppeltes Absenden
+    }
+    
     setIsSaving(true);
     
     try {
@@ -191,9 +216,12 @@ export default function NewEntryPage() {
       const deepSleep = parseInt(deepSleepHours || '0') * 60 + parseInt(deepSleepMinutes || '0');
       const remSleep = parseInt(remSleepHours || '0') * 60 + parseInt(remSleepMinutes || '0');
       
-      console.log('Sleep data prepared:', { totalSleep, lightSleep, deepSleep, remSleep });
+      // Validate sleep data
+      if (totalSleep < 0 || lightSleep < 0 || deepSleep < 0 || remSleep < 0) {
+        throw new Error('Schlafzeiten dürfen nicht negativ sein');
+      }
       
-      const sleepData: SleepData = {
+      const sleepData: Partial<SleepData> = {
         totalSleep,
         lightSleep,
         deepSleep,
@@ -202,17 +230,17 @@ export default function NewEntryPage() {
       };
       
       // Prepare exercise data
-      const exerciseData: ExerciseData = {
+      const exerciseData: Partial<ExerciseData> = {
         didExercise,
         activities: didExercise ? exerciseActivities.filter(a => a.type.trim() !== '') : []
       };
       
       // Prepare self-care data
-      const selfCareData: SelfCareData = {
-        sauna: sauna || { done: false, time: '', duration: 0 },
-        iceBath: iceBath || { done: false, time: '', duration: 0 },
-        stretching: stretching || { done: false, time: '', duration: 0 },
-        reading: reading || { done: false, time: '', duration: 0 }
+      const selfCareData: Partial<SelfCareData> = {
+        sauna: sauna || { done: false },
+        iceBath: iceBath || { done: false },
+        stretching: stretching || { done: false },
+        reading: reading || { done: false }
       };
       
       // Prepare nutrition data
@@ -221,17 +249,15 @@ export default function NewEntryPage() {
         proteinIntake: parseInt(proteinIntake) || 0,
         cheatmeal: cheatmeal || '',
         alcohol: alcohol || false,
-        alcoholTime: alcohol && alcoholTime ? alcoholTime : ''
+        alcoholTime: alcohol && alcoholTime ? alcoholTime : undefined
       };
       
-      console.log('All data prepared, creating entry object...');
-      
-      // Create or update entry
-      const newId = generateId();
-      console.log('Generated ID:', newId);
+      // Check if entry for this date already exists
+      const existingEntry = getEntryByDate(date);
+      const entryId = existingEntry?.id || generateId();
       
       const entry: DailyEntry = {
-        id: newId,
+        id: entryId,
         date,
         sleep: sleepData,
         nutrition: nutritionData,
@@ -244,48 +270,33 @@ export default function NewEntryPage() {
         comments: comments || ''
       };
       
-      // Check if entry for this date already exists
-      const existingEntry = getEntryByDate(date);
-      if (existingEntry) {
-        console.log('Updating existing entry with ID:', existingEntry.id);
-        entry.id = existingEntry.id;
+      // Save entry
+      await Promise.resolve(saveEntry(entry)); // Mache es async für bessere Fehlerbehandlung
+      
+      console.log('Entry saved successfully!');
+      
+      // Update streak info
+      const allEntries = getEntries();
+      const streakInfo = updateStreakInfo(allEntries);
+      setStreakCount(streakInfo.currentStreak);
+      
+      // Check for monthly checkpoint
+      const prevStreakInfo = getStreakInfo();
+      const isMonthly = streakInfo.monthlyCheckpoints.length > prevStreakInfo.monthlyCheckpoints.length;
+      setIsMonthlyCheckpoint(isMonthly);
+      
+      if (isMonthly) {
+        // Zeige Modal für monatlichen Checkpoint
+        setShowQuoteModal(true);
       } else {
-        console.log('Creating new entry with ID:', entry.id);
+        // Redirect zur Startseite
+        window.location.href = '/';
       }
       
-      console.log('Saving entry...');
-      
-      try {
-        // Save entry
-        saveEntry(entry);
-        
-        console.log('Entry saved successfully!');
-        
-        // Update streak info and prepare reward
-        const allEntries = getEntries();
-        const streakInfo = updateStreakInfo(allEntries);
-        setStreakCount(streakInfo.currentStreak);
-        
-        // Check if we've reached a monthly checkpoint
-        const prevStreakInfo = getStreakInfo();
-        setIsMonthlyCheckpoint(
-          streakInfo.monthlyCheckpoints.length > prevStreakInfo.monthlyCheckpoints.length
-        );
-        
-        // Einfachste Methode zur Navigation verwenden
-        setIsSaving(false);
-        
-        // Verwende eine einfache Weiterleitung ohne JavaScript-Methoden
-        document.location.href = '/';
-      } catch (saveError) {
-        console.error('Error in saveEntry function:', saveError);
-        alert(`Fehler beim Speichern: ${saveError.message || 'Unbekannter Fehler'}`);
-        setIsSaving(false);
-        return;
-      }
     } catch (error) {
       console.error('Error in form submission:', error);
-      alert(`Es ist ein Fehler aufgetreten: ${error.message || 'Unbekannter Fehler'}`);
+      alert(`Fehler beim Speichern: ${error instanceof Error ? error.message : 'Unbekannter Fehler'}`);
+    } finally {
       setIsSaving(false);
     }
   };
@@ -439,8 +450,8 @@ export default function NewEntryPage() {
           <h2 className="text-lg font-semibold mb-4">Hast du es dir heute gut gehen lassen?</h2>
           
           <div className="space-y-4">
-            {Object.entries(selfCareActivities).map(([key, activity]) => {
-              const label = getSelfCareLabel(key as keyof SelfCareData);
+            {(Object.entries(selfCareActivities) as [keyof SelfCareData, SelfCareActivity][]).map(([key, activity]) => {
+              const label = getSelfCareLabel(key);
               return (
                 <div key={key} className="border-t pt-4 first:border-t-0 first:pt-0">
                   <div className="flex items-center mb-2">
@@ -448,7 +459,13 @@ export default function NewEntryPage() {
                       type="checkbox"
                       id={`selfCare-${key}`}
                       checked={activity.done}
-                      onChange={(e) => updateSelfCareActivity(activity, activity === sauna ? setSauna : activity === iceBath ? setIceBath : activity === stretching ? setStretching : setReading, 'done', e.target.checked)}
+                      onChange={(e) => {
+                        const setter = key === 'sauna' ? setSauna :
+                                     key === 'iceBath' ? setIceBath :
+                                     key === 'stretching' ? setStretching :
+                                     setReading;
+                        updateSelfCareActivity(activity, setter, 'done', e.target.checked);
+                      }}
                       className="mr-2 h-4 w-4 text-primary"
                     />
                     <label htmlFor={`selfCare-${key}`}>{label}</label>
@@ -461,7 +478,14 @@ export default function NewEntryPage() {
                           type="number"
                           id={`selfCareDuration-${key}`}
                           value={activity.duration || ''}
-                          onChange={(e) => updateSelfCareActivity(activity, activity === sauna ? setSauna : activity === iceBath ? setIceBath : activity === stretching ? setStretching : setReading, 'duration', e.target.value ? parseInt(e.target.value) : undefined)}
+                          onChange={(e) => {
+                            const setter = key === 'sauna' ? setSauna :
+                                         key === 'iceBath' ? setIceBath :
+                                         key === 'stretching' ? setStretching :
+                                         setReading;
+                            const value = e.target.value ? parseInt(e.target.value) : 0;
+                            updateSelfCareActivity(activity, setter, 'duration', value);
+                          }}
                           min="0"
                           className="input-field"
                           placeholder="Minuten"
@@ -473,7 +497,13 @@ export default function NewEntryPage() {
                           type="time"
                           id={`selfCareTime-${key}`}
                           value={activity.time || ''}
-                          onChange={(e) => updateSelfCareActivity(activity, activity === sauna ? setSauna : activity === iceBath ? setIceBath : activity === stretching ? setStretching : setReading, 'time', e.target.value)}
+                          onChange={(e) => {
+                            const setter = key === 'sauna' ? setSauna :
+                                         key === 'iceBath' ? setIceBath :
+                                         key === 'stretching' ? setStretching :
+                                         setReading;
+                            updateSelfCareActivity(activity, setter, 'time', e.target.value);
+                          }}
                           className="input-field time-input"
                         />
                       </FormField>

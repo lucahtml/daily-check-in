@@ -47,15 +47,15 @@ export enum BedtimeRoutineStatus {
 export interface DailyEntry {
   id: string;
   date: string;
-  sleep: SleepData;
-  nutrition: NutritionData;
-  bedtimeRoutine: BedtimeRoutineStatus;
-  energyLevel: number;
-  mood: number;
-  gratitude: string;
-  exercise: ExerciseData;
-  selfCare: SelfCareData;
-  comments: string;
+  sleep?: Partial<SleepData>;
+  nutrition?: Partial<NutritionData>;
+  bedtimeRoutine?: BedtimeRoutineStatus;
+  energyLevel?: number;
+  mood?: number;
+  gratitude?: string;
+  exercise?: Partial<ExerciseData>;
+  selfCare?: Partial<SelfCareData>;
+  comments?: string;
 }
 
 const STORAGE_KEY = 'daily-check-in-entries';
@@ -91,18 +91,35 @@ export const saveEntry = (entry: DailyEntry): void => {
   if (!isBrowser) return;
   
   try {
-    // Sicherstellen, dass alle erforderlichen Felder vorhanden sind
-    if (!entry.id || !entry.date) {
-      console.error('Invalid entry data:', entry);
-      throw new Error('Ungültige Eintrags-Daten: ID und Datum sind erforderlich');
+    // Grundlegende Validierung
+    if (!entry.id) {
+      entry.id = generateId();
     }
+    
+    if (!entry.date) {
+      entry.date = getTodayFormatted();
+    }
+    
+    // Stelle sicher, dass alle Objekte initialisiert sind
+    entry.sleep = entry.sleep || {};
+    entry.nutrition = entry.nutrition || {};
+    entry.exercise = entry.exercise || { didExercise: false, activities: [] };
+    entry.selfCare = entry.selfCare || {
+      sauna: { done: false },
+      iceBath: { done: false },
+      stretching: { done: false },
+      reading: { done: false }
+    };
     
     const entries = getEntries();
     const existingEntryIndex = entries.findIndex(e => e.id === entry.id);
     
     if (existingEntryIndex >= 0) {
-      // Update existing entry
-      entries[existingEntryIndex] = entry;
+      // Update existing entry, aber behalte existierende Werte wenn keine neuen gegeben sind
+      entries[existingEntryIndex] = {
+        ...entries[existingEntryIndex],
+        ...entry
+      };
     } else {
       // Add new entry
       entries.push(entry);
@@ -112,7 +129,7 @@ export const saveEntry = (entry: DailyEntry): void => {
     updateStreakInfo(entries);
   } catch (error) {
     console.error('Error saving entry:', error);
-    throw error; // Fehler weitergeben, damit er in der UI behandelt werden kann
+    throw new Error(`Fehler beim Speichern des Eintrags: ${error instanceof Error ? error.message : 'Unbekannter Fehler'}`);
   }
 };
 
