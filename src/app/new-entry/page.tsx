@@ -232,7 +232,14 @@ export default function NewEntryPage() {
       // Prepare exercise data
       const exerciseData: Partial<ExerciseData> = {
         didExercise,
-        activities: didExercise ? exerciseActivities.filter(a => a.type.trim() !== '') : []
+        activities: didExercise 
+          ? exerciseActivities
+              .filter(a => a.type.trim() !== '' && (a.duration || 0) > 0)
+              .map(a => ({
+                ...a,
+                duration: a.duration || 0
+              }))
+          : []
       };
       
       // Prepare self-care data
@@ -275,22 +282,28 @@ export default function NewEntryPage() {
       
       console.log('Entry saved successfully!');
       
-      // Update streak info
-      const allEntries = getEntries();
-      const streakInfo = updateStreakInfo(allEntries);
-      setStreakCount(streakInfo.currentStreak);
-      
-      // Get a random quote
-      const quote = getRandomQuote();
-      setQuoteData(quote);
-      
-      // Check for monthly checkpoint
-      const prevStreakInfo = getStreakInfo();
-      const isMonthly = streakInfo.monthlyCheckpoints.length > prevStreakInfo.monthlyCheckpoints.length;
-      setIsMonthlyCheckpoint(isMonthly);
-      
-      // Always show the quote modal
-      setShowQuoteModal(true);
+      // Only show quote and update streak for new entries
+      if (!existingEntry) {
+        // Update streak info
+        const allEntries = getEntries();
+        const streakInfo = updateStreakInfo(allEntries);
+        setStreakCount(streakInfo.currentStreak);
+        
+        // Get a random quote
+        const quote = getRandomQuote();
+        setQuoteData(quote);
+        
+        // Check for monthly checkpoint
+        const prevStreakInfo = getStreakInfo();
+        const isMonthly = streakInfo.monthlyCheckpoints.length > prevStreakInfo.monthlyCheckpoints.length;
+        setIsMonthlyCheckpoint(isMonthly);
+        
+        // Show the quote modal only for new entries
+        setShowQuoteModal(true);
+      } else {
+        // For existing entries, just redirect to home
+        document.location.href = '/';
+      }
       
     } catch (error) {
       console.error('Error in form submission:', error);
@@ -402,8 +415,11 @@ export default function NewEntryPage() {
                     <input
                       type="number"
                       id={`exerciseDuration-${index}`}
-                      value={activity.duration}
-                      onChange={(e) => updateExerciseActivity(index, 'duration', parseInt(e.target.value) || 0)}
+                      value={activity.duration || ''}
+                      onChange={(e) => {
+                        const value = e.target.value ? parseInt(e.target.value) : '';
+                        updateExerciseActivity(index, 'duration', value);
+                      }}
                       min="0"
                       className="input-field"
                       placeholder="Minuten"
