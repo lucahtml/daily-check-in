@@ -91,6 +91,18 @@ export default function EntryDetailPage({ params }: EntryDetailPageProps) {
     );
   }
 
+  const totalSleepHours = entry.sleep?.totalSleep ? Math.floor(entry.sleep.totalSleep / 60) : 0;
+  const totalSleepMinutes = entry.sleep?.totalSleep ? entry.sleep.totalSleep % 60 : 0;
+
+  const lightSleepHours = entry.sleep?.lightSleep ? Math.floor(entry.sleep.lightSleep / 60) : 0;
+  const lightSleepMinutes = entry.sleep?.lightSleep ? entry.sleep.lightSleep % 60 : 0;
+
+  const deepSleepHours = entry.sleep?.deepSleep ? Math.floor(entry.sleep.deepSleep / 60) : 0;
+  const deepSleepMinutes = entry.sleep?.deepSleep ? entry.sleep.deepSleep % 60 : 0;
+
+  const remSleepHours = entry.sleep?.remSleep ? Math.floor(entry.sleep.remSleep / 60) : 0;
+  const remSleepMinutes = entry.sleep?.remSleep ? entry.sleep.remSleep % 60 : 0;
+
   return (
     <div className="py-4">
       <div className="flex justify-between items-center mb-6">
@@ -124,30 +136,30 @@ export default function EntryDetailPage({ params }: EntryDetailPageProps) {
             <div>
               <p className="text-gray-600">Gesamte Schlafzeit:</p>
               <p className="font-medium">
-                {Math.floor(entry.sleep.totalSleep / 60)} Std. {entry.sleep.totalSleep % 60} Min.
+                {totalSleepHours} Std. {totalSleepMinutes} Min.
               </p>
             </div>
             <div>
               <p className="text-gray-600">Leichter Schlaf:</p>
               <p className="font-medium">
-                {Math.floor(entry.sleep.lightSleep / 60)} Std. {entry.sleep.lightSleep % 60} Min.
+                {lightSleepHours} Std. {lightSleepMinutes} Min.
               </p>
             </div>
             <div>
               <p className="text-gray-600">Tiefer Schlaf:</p>
               <p className="font-medium">
-                {Math.floor(entry.sleep.deepSleep / 60)} Std. {entry.sleep.deepSleep % 60} Min.
+                {deepSleepHours} Std. {deepSleepMinutes} Min.
               </p>
             </div>
             <div>
               <p className="text-gray-600">REM-Schlaf:</p>
               <p className="font-medium">
-                {Math.floor(entry.sleep.remSleep / 60)} Std. {entry.sleep.remSleep % 60} Min.
+                {remSleepHours} Std. {remSleepMinutes} Min.
               </p>
             </div>
             <div>
               <p className="text-gray-600">HRV:</p>
-              <p className="font-medium">{entry.sleep.hrv} ms</p>
+              <p className="font-medium">{entry.sleep?.hrv ?? '-'} ms</p>
             </div>
           </div>
         </section>
@@ -212,7 +224,7 @@ export default function EntryDetailPage({ params }: EntryDetailPageProps) {
         <div className="card mb-6">
           <h2 className="text-lg font-semibold mb-4">Sport</h2>
           
-          {entry.exercise.didExercise && entry.exercise.activities && entry.exercise.activities.length > 0 ? (
+          {entry.exercise?.didExercise && entry.exercise?.activities && entry.exercise.activities.length > 0 ? (
             <div className="space-y-4">
               {entry.exercise.activities.map((activity, index) => (
                 <div key={index} className="border-b border-gray-100 pb-3 mb-3 last:border-b-0 last:pb-0 last:mb-0">
@@ -220,7 +232,7 @@ export default function EntryDetailPage({ params }: EntryDetailPageProps) {
                   <div className="space-y-2 pl-3">
                     <p><span className="font-medium">Art des Sports:</span> {activity.type}</p>
                     {activity.time && <p><span className="font-medium">Uhrzeit:</span> {activity.time}</p>}
-                    <p><span className="font-medium">Dauer:</span> {activity.duration} Minuten</p>
+                    {activity.duration > 0 && <p><span className="font-medium">Dauer:</span> {activity.duration} Minuten</p>}
                   </div>
                 </div>
               ))}

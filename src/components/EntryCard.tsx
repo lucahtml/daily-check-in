@@ -38,7 +38,7 @@ const EntryCard: React.FC<EntryCardProps> = ({ entry }) => {
       return 'Nein';
     }
     const totalDuration = entry.exercise.activities.reduce((sum, activity) => sum + (activity.duration || 0), 0);
-    return `${totalDuration} min`;
+    return totalDuration > 0 ? `${totalDuration} min` : 'Nein';
   };
 
   return (
