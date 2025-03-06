@@ -32,6 +32,15 @@ const EntryCard: React.FC<EntryCardProps> = ({ entry }) => {
     }
   };
 
+  // Format exercise duration
+  const getExerciseDuration = (entry: DailyEntry) => {
+    if (!entry.exercise?.didExercise || !entry.exercise.activities || entry.exercise.activities.length === 0) {
+      return 'Nein';
+    }
+    const totalDuration = entry.exercise.activities.reduce((sum, activity) => sum + (activity.duration || 0), 0);
+    return `${totalDuration} min`;
+  };
+
   return (
     <Link href={`/entry/${entry.id}/`} className="block no-underline">
       <div className="card hover:shadow-lg transition-shadow mb-4">
@@ -52,11 +61,7 @@ const EntryCard: React.FC<EntryCardProps> = ({ entry }) => {
           </div>
           <div>
             <p className="text-gray-600">Sport:</p>
-            <p className="font-medium">
-              {entry.exercise?.didExercise && entry.exercise?.activities && entry.exercise.activities.length > 0 
-                ? `${entry.exercise.activities.length} Aktivität${entry.exercise.activities.length > 1 ? 'en' : ''}`
-                : 'Nein'}
-            </p>
+            <p className="font-medium">{getExerciseDuration(entry)}</p>
           </div>
           <div>
             <p className="text-gray-600">Protein:</p>

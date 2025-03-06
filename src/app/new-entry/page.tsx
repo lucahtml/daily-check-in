@@ -20,7 +20,7 @@ import {
   getStreakInfo,
   updateStreakInfo
 } from '@/lib/storage';
-import { getRandomQuote } from '@/lib/quotes';
+import { getRandomQuote, Quote } from '@/lib/quotes';
 
 export default function NewEntryPage() {
   // Entferne router und verwende nur einfache Navigation
@@ -30,7 +30,7 @@ export default function NewEntryPage() {
   
   // Modal state
   const [showQuoteModal, setShowQuoteModal] = useState(false);
-  const [quoteData, setQuoteData] = useState(null);
+  const [quoteData, setQuoteData] = useState<Quote | null>(null);
   const [streakCount, setStreakCount] = useState(0);
   const [isMonthlyCheckpoint, setIsMonthlyCheckpoint] = useState(false);
   
@@ -271,7 +271,7 @@ export default function NewEntryPage() {
       };
       
       // Save entry
-      await Promise.resolve(saveEntry(entry)); // Mache es async für bessere Fehlerbehandlung
+      await Promise.resolve(saveEntry(entry));
       
       console.log('Entry saved successfully!');
       
@@ -280,18 +280,17 @@ export default function NewEntryPage() {
       const streakInfo = updateStreakInfo(allEntries);
       setStreakCount(streakInfo.currentStreak);
       
+      // Get a random quote
+      const quote = getRandomQuote();
+      setQuoteData(quote);
+      
       // Check for monthly checkpoint
       const prevStreakInfo = getStreakInfo();
       const isMonthly = streakInfo.monthlyCheckpoints.length > prevStreakInfo.monthlyCheckpoints.length;
       setIsMonthlyCheckpoint(isMonthly);
       
-      if (isMonthly) {
-        // Zeige Modal für monatlichen Checkpoint
-        setShowQuoteModal(true);
-      } else {
-        // Redirect zur Startseite
-        window.location.href = '/';
-      }
+      // Always show the quote modal
+      setShowQuoteModal(true);
       
     } catch (error) {
       console.error('Error in form submission:', error);
