@@ -2,35 +2,43 @@
 const nextConfig = {
   reactStrictMode: true,
   typescript: {
-    // !! WARN !!
+    // !! WARN !! 
     // Dangerously allow production builds to successfully complete even if
     // your project has type errors.
     // !! WARN !!
     ignoreBuildErrors: true,
   },
+  // Enable static exports
+  output: 'export',
+  // Disable image optimization since we're using static export
   images: {
     unoptimized: true,
   },
-  trailingSlash: false,
-  // Ensure client-side routing works with Vercel
+  // Handle trailing slashes
+  trailingSlash: true,
+  // Configure base path if needed
+  // basePath: '',
+  // Configure asset prefix if needed
+  // assetPrefix: '',
+  // Enable static HTML export
+  exportPathMap: async function() {
+    return {
+      '/': { page: '/' },
+      '/trades': { page: '/trades' },
+      '/trades/new': { page: '/trades/new' },
+      // Dynamic routes for trade details will be handled client-side
+    };
+  },
+  // Handle client-side routing for dynamic routes
   async rewrites() {
     return [
+      // Handle client-side routing for trade details
       {
-        source: '/trades/:path*',
-        destination: '/trades/:path*',
+        source: '/trades/:id',
+        destination: '/trades/[id]',
       },
     ];
   },
-  // Add output export for static deployment
-  output: 'export',
-  // Add base path if needed
-  // basePath: '',
-  // Add asset prefix if needed
-  // assetPrefix: '',
-  // Enable static exports
-  images: {
-    unoptimized: true,
-  },
-}
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;

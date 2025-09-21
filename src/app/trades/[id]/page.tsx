@@ -39,13 +39,6 @@ interface TradeDetailPageProps {
   };
 }
 
-// This function generates the static paths for all trades at build time
-export async function generateStaticParams() {
-  // In a real app, you would fetch all trade IDs here
-  // For now, we'll return an empty array and rely on client-side routing
-  return [];
-}
-
 export default function TradeDetailPage({ params, searchParams }: TradeDetailPageProps) {
   const { id } = params;
   const router = useRouter();
@@ -55,14 +48,23 @@ export default function TradeDetailPage({ params, searchParams }: TradeDetailPag
   const [isLoading, setIsLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(isEditMode);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [notFound, setNotFound] = useState(false);
 
   useEffect(() => {
     if (id && id !== 'new') {
-      const loadedTrade = getTradeById(id as string);
-      if (loadedTrade) {
-        setTrade(loadedTrade);
+      try {
+        const loadedTrade = getTradeById(id);
+        if (loadedTrade) {
+          setTrade(loadedTrade);
+        } else {
+          setNotFound(true);
+        }
+      } catch (error) {
+        console.error('Error loading trade:', error);
+        setNotFound(true);
+      } finally {
+        setIsLoading(false);
       }
-      setIsLoading(false);
     } else {
       setTrade({
         ...defaultTradeEntry,
@@ -82,8 +84,8 @@ export default function TradeDetailPage({ params, searchParams }: TradeDetailPag
     try {
       saveTradeEntry(trade);
       setIsEditing(false);
-      // Refresh the page to show the updated trade
-      router.replace(`/trades/${trade.id}`);
+      // Use push instead of replace to ensure proper navigation
+      router.push(`/trades/${trade.id}`);
     } catch (error) {
       console.error('Error saving trade:', error);
       alert('Error saving trade. Please try again.');
@@ -115,30 +117,33 @@ export default function TradeDetailPage({ params, searchParams }: TradeDetailPag
     }
   };
 
-  if (isLoading) {
+  // Handle 404 case
+  if (notFound) {
     return (
-      <div className="flex justify-center items-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
-      </div>
-    );
-  }
-
-  if (!trade) {
-    return (
-      <div className="container mx-auto p-4">
-        <div className="bg-white p-6 rounded-lg shadow">
-          <h1 className="text-2xl font-bold mb-4">Trade Not Found</h1>
-          <p className="mb-4">The requested trade could not be found.</p>
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold mb-4">Trade not found</h1>
+          <p className="mb-4">The trade you're looking for doesn't exist or has been deleted.</p>
           <Link 
             href="/trades" 
-            className="text-indigo-600 hover:text-indigo-800 font-medium"
+            className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
           >
-            ← Back to Trades
+            Back to Trades
           </Link>
         </div>
       </div>
     );
   }
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
+      </div>
+    );
+  }
+
+  if (!trade) return null;
 
   return (
     <div className="container mx-auto p-4">
