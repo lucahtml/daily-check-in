@@ -2,7 +2,7 @@
 
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { useState, useEffect } from 'react';
-import { getTradeById, saveTradeEntry, TradeEntry } from './lib/storage';
+import { getTradeById, saveTradeEntry, TradeEntry } from '@/lib/storage';
 import Link from 'next/link';
 import TradeForm from './components/TradeForm';
 
@@ -46,7 +46,7 @@ export default function TradeDetailPage() {
   const [notFound, setNotFound] = useState(false);
 
   useEffect(() => {
-    if (id && id !== 'new') {
+    if (id && id!== 'new') {
       try {
         const loadedTrade = getTradeById(id);
         if (loadedTrade) {
@@ -62,7 +62,7 @@ export default function TradeDetailPage() {
       }
     } else {
       setTrade({
-        ...defaultTradeEntry,
+       ...defaultTradeEntry,
         id: crypto.randomUUID(),
       } as TradeEntry);
       setIsLoading(false);
@@ -80,7 +80,7 @@ export default function TradeDetailPage() {
       saveTradeEntry(trade);
       setIsEditing(false);
       // Use push instead of replace to ensure proper navigation
-      router.push(`/trades/${trade.id}`);
+      router.push(`/trade/${trade.id}`);
     } catch (error) {
       console.error('Error saving trade:', error);
       alert('Error saving trade. Please try again.');
@@ -98,15 +98,15 @@ export default function TradeDetailPage() {
     if (name.includes('.')) {
       const [parent, child] = name.split('.');
       setTrade(prev => ({
-        ...prev!,
+       ...prev!,
         [parent]: {
-          ...(prev![parent as keyof typeof prev] as object || {}),
+         ...(prev![parent as keyof typeof prev] as object || {}),
           [child]: value
         }
       }));
     } else {
       setTrade(prev => ({
-        ...prev!,
+       ...prev!,
         [name]: value
       }));
     }
@@ -120,7 +120,7 @@ export default function TradeDetailPage() {
           <h1 className="text-2xl font-bold mb-4">Trade not found</h1>
           <p className="mb-4">The trade you're looking for doesn't exist or has been deleted.</p>
           <Link 
-            href="/trades" 
+            href="/trade" 
             className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
           >
             Back to Trades
@@ -156,7 +156,7 @@ export default function TradeDetailPage() {
               Edit
             </button>
             <Link 
-              href="/trades"
+              href="/trade"
               className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50"
             >
               Back to Trades

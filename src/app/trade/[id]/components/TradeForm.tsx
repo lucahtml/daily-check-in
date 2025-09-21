@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { TradeEntry } from '../lib/storage';
+import { TradeEntry } from '@/lib/storage';
 
 interface TradeFormProps {
   trade: TradeEntry;
