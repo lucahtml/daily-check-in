@@ -1,9 +1,23 @@
 'use client';
 
-import { useParams, useRouter, useSearchParams } from 'next/navigation';
+import { useParams, useRouter, useSearchParams as useNextSearchParams } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { getTradeById, saveTradeEntry, TradeEntry } from '@/lib/storage';
 import Link from 'next/link';
+
+// Workaround for useSearchParams in static export
+const useSearchParams = () => {
+  const searchParams = useNextSearchParams();
+  const [params, setParams] = useState<URLSearchParams | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setParams(new URLSearchParams(window.location.search));
+    }
+  }, [searchParams]);
+
+  return params;
+};
 
 // Reuse the default trade entry from the new page
 const defaultTradeEntry: Omit<TradeEntry, 'id'> = {
@@ -30,19 +44,22 @@ const defaultTradeEntry: Omit<TradeEntry, 'id'> = {
   notes: ''
 };
 
-interface TradeDetailPageProps {
-  params: {
-    id: string;
-  };
-  searchParams: {
-    edit?: string;
-  };
-}
-
-export default function TradeDetailPage({ params, searchParams }: TradeDetailPageProps) {
-  const { id } = params;
+export default function TradeDetailPage() {
+  const params = useParams();
+  const searchParams = useSearchParams();
   const router = useRouter();
-  const isEditMode = searchParams?.edit === 'true';
+  
+  const id = params?.id as string;
+  const isEditMode = searchParams?.get('edit') === 'true';
+  
+  // Add a loading state while search params are being loaded
+  const [isParamsReady, setIsParamsReady] = useState(false);
+  
+  useEffect(() => {
+    if (searchParams !== null) {
+      setIsParamsReady(true);
+    }
+  }, [searchParams]);
   
   const [trade, setTrade] = useState<TradeEntry | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -116,6 +133,15 @@ export default function TradeDetailPage({ params, searchParams }: TradeDetailPag
       }));
     }
   };
+
+  // Show loading state while waiting for search params
+  if (!isParamsReady) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
+      </div>
+    );
+  }
 
   // Handle 404 case
   if (notFound) {
@@ -461,7 +487,7 @@ export default function TradeDetailPage({ params, searchParams }: TradeDetailPag
             >
               {isSubmitting ? 'Saving...' : 'Save Trade'}
             </button>
-          </div>
+            </div>
         )}
       </form>
     </div>
