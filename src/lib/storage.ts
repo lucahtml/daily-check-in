@@ -44,6 +44,70 @@ export enum BedtimeRoutineStatus {
   SKIPPED = "skipped"
 }
 
+export interface TradeEntry {
+  id: string;
+  date: string;
+  trade_identity: {
+    instrument: string;
+    entry_date_time: string;
+    session: string;
+    timeframe: string;
+    direction: 'Long' | 'Short';
+    trade_type: string;
+    market_condition: string;
+  };
+  pre_trade_hypothesis: {
+    setup_or_strategy_name: string;
+    reason_for_entry: string;
+    position_size: number;
+    account_risk_percent: number;
+    entry_price: number;
+    stop_loss_price: number;
+    take_profit_price: number;
+    planned_rr_ratio: number;
+    screenshot_before_url?: string;
+    market_catalyst?: string;
+    confluence_factors?: string[];
+  };
+  in_trade_execution?: {
+    in_trade_actions_log?: string;
+    emotional_journey_log?: string;
+    plan_deviations?: string;
+    max_unrealized_profit?: number;
+    max_unrealized_loss?: number;
+    trade_duration?: string;
+    monitoring_frequency?: string;
+  };
+  post_trade_analysis?: {
+    exit_date_time?: string;
+    exit_price?: number;
+    final_pl_currency?: number;
+    r_multiple_realized?: number;
+    followed_plan?: boolean;
+    what_went_well?: string;
+    what_went_wrong?: string;
+    key_lesson_learned?: string;
+    screenshot_after_url?: string;
+    exit_reason?: string;
+    setup_grade?: string;
+    execution_grade?: string;
+  };
+  ict_analysis?: {
+    is_ict_trade: boolean;
+    entry_pattern?: string;
+    is_silver_bullet_trade?: boolean;
+    ote_retracement?: boolean;
+  };
+  psychological_review?: {
+    pre_trade_confidence_level?: number;
+    pre_trade_emotional_state?: string;
+    discipline_score?: number;
+    post_trade_emotional_state?: string;
+    stress_level_during_trade?: number;
+  };
+  notes?: string;
+}
+
 export interface DailyEntry {
   id: string;
   date: string;
@@ -54,11 +118,13 @@ export interface DailyEntry {
   mood?: number;
   gratitude?: string;
   exercise?: Partial<ExerciseData>;
+  trades?: TradeEntry[];
   selfCare?: Partial<SelfCareData>;
   comments?: string;
 }
 
 const STORAGE_KEY = 'daily-check-in-entries';
+const TRADE_ENTRIES_KEY = 'trade-entries';
 
 // Helper to check if we're in a browser environment
 const isBrowser = typeof window !== 'undefined';
@@ -83,6 +149,75 @@ export const getEntries = (): DailyEntry[] => {
   } catch (error) {
     console.error('Error retrieving entries:', error);
     return [];
+  }
+};
+
+// Save a trade entry
+export const saveTradeEntry = (entry: TradeEntry): void => {
+  if (!isBrowser) return;
+  
+  try {
+    const entries = getTradeEntries();
+    const existingIndex = entries.findIndex(e => e.id === entry.id);
+    
+    if (existingIndex >= 0) {
+      entries[existingIndex] = entry;
+    } else {
+      entries.push(entry);
+    }
+    
+    localStorage.setItem(TRADE_ENTRIES_KEY, JSON.stringify(entries));
+    
+    // Update the last updated timestamp
+    localStorage.setItem(`${TRADE_ENTRIES_KEY}-last-updated`, new Date().toISOString());
+  } catch (error) {
+    console.error('Error saving trade entry:', error);
+    throw new Error(`Error saving trade entry: ${error instanceof Error ? error.message : 'Unknown error'}`);
+  }
+};
+
+// Get all trade entries
+export const getTradeEntries = (): TradeEntry[] => {
+  if (!isBrowser) return [];
+  
+  try {
+    const entries = localStorage.getItem(TRADE_ENTRIES_KEY);
+    return entries ? JSON.parse(entries) : [];
+  } catch (error) {
+    console.error('Error getting trade entries:', error);
+    return [];
+  }
+};
+
+// Get trades by date range
+export const getTradesByDateRange = (startDate: string, endDate: string): TradeEntry[] => {
+  const entries = getTradeEntries();
+  return entries.filter(entry => 
+    entry.date >= startDate && entry.date <= endDate
+  );
+};
+
+// Get trade by ID
+export const getTradeById = (id: string): TradeEntry | null => {
+  const entries = getTradeEntries();
+  return entries.find(entry => entry.id === id) || null;
+};
+
+// Delete a trade entry
+export const deleteTradeEntry = (id: string): void => {
+  if (!isBrowser) return;
+  
+  try {
+    const entries = getTradeEntries();
+    const updatedEntries = entries.filter(entry => entry.id !== id);
+    
+    localStorage.setItem(TRADE_ENTRIES_KEY, JSON.stringify(updatedEntries));
+    
+    // Update the last updated timestamp
+    localStorage.setItem(`${TRADE_ENTRIES_KEY}-last-updated`, new Date().toISOString());
+  } catch (error) {
+    console.error('Error deleting trade entry:', error);
+    throw new Error(`Error deleting trade entry: ${error instanceof Error ? error.message : 'Unknown error'}`);
   }
 };
 
