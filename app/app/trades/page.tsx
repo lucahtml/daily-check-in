@@ -5,6 +5,13 @@ import { useState, useEffect } from 'react';
 import { getTradeById, saveTradeEntry, TradeEntry } from '@/lib/storage';
 import Link from 'next/link';
 
+// Required for static export with dynamic routes
+export async function generateStaticParams() {
+  // Return an empty array since we handle dynamic routes client-side
+  // For a trade journal, we don't know the trade IDs at build time
+  return [];
+}
+
 // Reuse the default trade entry from the new page
 const defaultTradeEntry: Omit<TradeEntry, 'id'> = {
   date: new Date().toISOString().split('T')[0],
