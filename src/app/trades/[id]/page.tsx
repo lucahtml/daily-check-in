@@ -39,6 +39,13 @@ interface TradeDetailPageProps {
   };
 }
 
+// This function generates the static paths for all trades at build time
+export async function generateStaticParams() {
+  // In a real app, you would fetch all trade IDs here
+  // For now, we'll return an empty array and rely on client-side routing
+  return [];
+}
+
 export default function TradeDetailPage({ params, searchParams }: TradeDetailPageProps) {
   const { id } = params;
   const router = useRouter();

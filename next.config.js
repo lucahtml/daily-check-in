@@ -11,7 +11,26 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-  trailingSlash: false
+  trailingSlash: false,
+  // Ensure client-side routing works with Vercel
+  async rewrites() {
+    return [
+      {
+        source: '/trades/:path*',
+        destination: '/trades/:path*',
+      },
+    ];
+  },
+  // Add output export for static deployment
+  output: 'export',
+  // Add base path if needed
+  // basePath: '',
+  // Add asset prefix if needed
+  // assetPrefix: '',
+  // Enable static exports
+  images: {
+    unoptimized: true,
+  },
 }
 
 module.exports = nextConfig
