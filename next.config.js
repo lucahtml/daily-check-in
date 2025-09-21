@@ -21,6 +21,11 @@ const nextConfig = {
   // Handle trailing slashes
   trailingSlash: true,
   
+  // Required for dynamic routes with static export
+  experimental: {
+    missingSuspenseWithCSRBailout: false,
+  },
+  
   // Configure base path if needed
   // basePath: '',
   
