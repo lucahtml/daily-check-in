@@ -1,3 +1,5 @@
+'use client'; // Add this directive at the very top
+
 import React, { useState } from 'react';
 
 interface FormFieldProps {
@@ -33,10 +35,10 @@ const FormField: React.FC<FormFieldProps> = ({
   });
 
   return (
-    <div className={`mb-4 ${className} transition-all duration-300 ${isFocused ? 'transform -translate-y-1' : ''}`}>
+    <div className={`mb-4 ${className} transition-all duration-300 ${isFocused? 'transform -translate-y-1' : ''}`}>
       <label 
         htmlFor={htmlFor} 
-        className={`label transition-all duration-300 ${isFocused ? 'text-primary' : ''}`}
+        className={`label transition-all duration-300 ${isFocused? 'text-primary' : ''}`}
       >
         {label}
       </label>
