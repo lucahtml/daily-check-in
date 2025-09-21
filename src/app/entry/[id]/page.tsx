@@ -5,10 +5,10 @@ import { useRouter, useParams } from 'next/navigation';
 import Link from 'next/link';
 import { getEntries, DailyEntry, deleteEntry, BedtimeRoutineStatus } from '@/lib/storage';
 
-// Required for static export with dynamic routes
-export async function generateStaticParams() {
-  return [];
-}
+// DELETE THESE LINES:
+// export async function generateStaticParams() {
+//   return [];
+// }
 
 export default function EntryDetailPage() {
   const router = useRouter();
