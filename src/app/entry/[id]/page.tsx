@@ -1,22 +1,22 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useParams } from 'next/navigation';
 import Link from 'next/link';
 import { getEntries, DailyEntry, deleteEntry, BedtimeRoutineStatus } from '@/lib/storage';
 
-interface EntryDetailPageProps {
-  params: {
-    id: string;
-  };
+// Required for static export with dynamic routes
+export async function generateStaticParams() {
+  return [];
 }
 
-export default function EntryDetailPage({ params }: EntryDetailPageProps) {
+export default function EntryDetailPage() {
   const router = useRouter();
+  const params = useParams();
   const [entry, setEntry] = useState<DailyEntry | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isDeleting, setIsDeleting] = useState(false);
-  const { id } = params;
+  const id = params?.id as string;
 
   useEffect(() => {
     const loadEntry = () => {
